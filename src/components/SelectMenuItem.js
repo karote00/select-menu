@@ -3,7 +3,10 @@ import styled from 'styled-components';
 
 const SelectMenuItemButton = styled.div`
 	background: gray;
-	color: ${props => props.primary ? 'red' : 'white' };
+
+	div {
+		color: ${props => props.primary ? 'red' : 'white' };
+	}
 `;
 
 class SelectMenuItem extends Component {
