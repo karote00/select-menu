@@ -39,6 +39,7 @@ const defaultProps = {
 
 const Wrapper = styled.div`
   width: 200px;
+  color: rgba(0, 0, 0, .5);
 `;
 
 class SelectMenuWrapper extends Component {
