@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
+import SelectMenuWrapper from './SelectMenuWrapper';
+import SelectMenuButton from './SelectMenuButton';
 import SelectMenuItem from './SelectMenuItem';
 
 const SelectMenuItemButton = styled.div`
@@ -13,9 +15,9 @@ const SelectMenuItemButton = styled.div`
 class SelectMenu extends Component {
   render() {
     return (
-      <SelectMenuItemButton>
-        <SelectMenuItem label="Label"/>
-      </SelectMenuItemButton>
+      <SelectMenuWrapper>
+        <SelectMenuButton />
+      </SelectMenuWrapper>
     );
   }
 }
