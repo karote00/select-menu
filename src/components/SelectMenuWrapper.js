@@ -6,7 +6,7 @@ import SelectMenuButton from './SelectMenuButton';
 import SelectMenu from './SelectMenu';
 
 const propTypes = {
-
+  focusedItem: PropTypes.string,
 };
 
 const defaultProps = {
@@ -22,10 +22,15 @@ class SelectMenuWrapper extends Component {
     };
 
     this.onItemChange = this.onItemChange.bind(this);
+    this.onFocusChange = this.onFocusChange.bind(this);
   }
 
   onItemChange(selectedItems) {
     this.setState({ label: selectedItems.join(', ').trim() });
+  }
+
+  onFocusChange(focusedItem) {
+    this.setState({ focusedItem });
   }
 
   render() {
