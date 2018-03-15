@@ -13,7 +13,33 @@ const propTypes = {
 
 const defaultProps = {
   initialLabel: null,
+
+  menuDatas: [
+    {
+      meta: {
+        addable: false,
+      },
+      items: [
+        { icon: 'fa-rocket', label: 'rocket', tips: [100, 200, 'fa-mobile'] },
+        { label: 'smiley', disabled: true },
+      ]
+    },
+    {
+      meta: {
+        addable: false,
+      },
+      items: [
+        { icon: 'fa-rocket', label: 'rocket', tips: [100, 200, 'fa-car'] },
+        { icon: 'fa-play', label: 'play', tips: ['fa-mobile'] },
+        { label: 'America', editabled: true },
+      ]
+    }
+  ],
 };
+
+const Wrapper = styled.div`
+  width: 200px;
+`;
 
 class SelectMenuWrapper extends Component {
   constructor(props) {
@@ -21,10 +47,13 @@ class SelectMenuWrapper extends Component {
 
     this.state = {
       label: props.initialLabel,
+      selectMenuIsOpen: false,
     };
 
     this.onItemChange = this.onItemChange.bind(this);
     this.onFocusChange = this.onFocusChange.bind(this);
+    this.onOpen = this.onOpen.bind(this);
+    this.onClose = this.onClose.bind(this);
   }
 
   onItemChange(selectedItems) {
@@ -35,17 +64,26 @@ class SelectMenuWrapper extends Component {
     this.setState({ focusedItem });
   }
 
+  onOpen() {
+    this.setState({ selectMenuIsOpen: true });
+  }
+
+  onClose() {
+    this.setState({ selectMenuIsOpen: false });
+  }
+
   render() {
-    const { label } = this.state;
+    const { menuDatas } = this.props;
+    const { label, selectMenuIsOpen } = this.state;
 
     return (
-      <div>
+      <Wrapper>
         <SelectMenuButton
           label={label}
           onItemChange={this.onItemChange}
         />
-        <SelectMenu />
-      </div>
+        <SelectMenu isOpen={selectMenuIsOpen} menuDatas={menuDatas} />
+      </Wrapper>
     );
   }
 }
