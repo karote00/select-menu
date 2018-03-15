@@ -43,9 +43,15 @@ const SelectMenuItemWrapper = styled.div`
 		text-align: center;
 	}
 
-	.tips > span {
-		padding: 0 4px;
-		color: rgba(0, 0, 0, .3);
+	.tips {
+		.icon {
+			width: 1em;
+		}
+
+		> span {
+			padding: 0 4px;
+			color: rgba(0, 0, 0, .3);
+		}
 	}
 `;
 
@@ -62,7 +68,9 @@ const tipsItem = (tips) => {
 		case 'object':
 			if (tips.length) {
 				tipsContent = tips.map((tip, i) => {
-					if (typeof tip === 'string' && tip.indexOf('fa-') > -1) return <FA key={i} name={tip.substr(3)} />
+					if (typeof tip === 'string' && tip.indexOf('fa-') > -1) {
+						return <FA key={i} className="icon" name={tip.substr(3)} />
+					}
 					return (<span key={i}>{tip}</span>);
 				});
 			}
