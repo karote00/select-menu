@@ -22,7 +22,7 @@ class SelectMenu extends Component {
 
     const hasIcon = menuDatas.filter(group => {
       return group.items.filter(item => item.icon && item.icon.indexOf('fa-') > -1).length > 0;
-    });
+    }).length > 0;
 
     const OptGroupContents = menuDatas.map((group, i) => {
       const { meta, items } = group;
