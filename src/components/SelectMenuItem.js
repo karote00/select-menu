@@ -26,14 +26,12 @@ const SelectMenuItemWrapper = styled.div`
 	}
 
 	.label {
-		&.hasTips {
-			position: relative;
+		flex: 1;
 
-			div {
-				white-space: nowrap;
-		    overflow: hidden;
-		    text-overflow: ellipsis;
-		  }
+		&.hasTips {
+			white-space: nowrap;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
 		}
 	}
 
@@ -56,8 +54,11 @@ const SelectMenuItemWrapper = styled.div`
 `;
 
 const SelectMenuItemContentWrapper = styled.div`
+	display: -webkit-flex;
+  display: -moz-flex;
+  display: flex;
+
 	> div {
-		float: left;
 		padding: 4px 8px;
 	}
 `;
@@ -76,7 +77,7 @@ const tipsItem = (tips) => {
 			}
 			break;
 		default:
-			tipsContent = (<span>{tips}</span>);
+			tipsContent = tips && (<span>{tips}</span>) || null;
 			break;
 	}
 
@@ -89,10 +90,10 @@ class SelectMenuItem extends Component {
 
   	const iconContent = (hasIcon || icon.indexOf('fa-') > -1) ?
   		<div className="icon"><FA name={icon.substr(3)} /></div> : null;
-  	const labelContent = <div className={`label ${tips ? 'hasTips' : ''}`}><div>{label}</div></div>;
+  	const labelContent = <div className={`label ${tips ? 'hasTips' : ''}`}>{label}</div>;
   	const controlIconContent = controlIcon.indexOf('fa-') > -1 ?
   		<div className="fl-r"><FA name={controlIcon.substr(3)} /></div> : null;
-  	const tipsContent = tipsItem(tips);
+  	const tipsContent = tips && <div className="fl-r tips">{tipsItem(tips)}</div>;
 
 
     return (
@@ -101,7 +102,7 @@ class SelectMenuItem extends Component {
 	      	{iconContent}
 	      	{labelContent}
 	      	{controlIconContent}
-	      	<div className="fl-r tips">{tipsContent}</div>
+	      	{tipsContent}
 	      </SelectMenuItemContentWrapper>
       </SelectMenuItemWrapper>
     );
