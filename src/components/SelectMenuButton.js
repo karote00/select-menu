@@ -9,13 +9,21 @@ const SelectMenuItemButton = styled.div`
   border-radius: 3px;
   border: 2px solid rgba(0, 0, 0, 0.4);
   font-weight: bold;
+
+  .label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 class SelectMenuButton extends Component {
   render() {
+    const { label } = this.props;
+
     return (
       <SelectMenuItemButton>
-        <SelectMenuItem label="Label" controlIcon="fa-angle-down"/>
+        <SelectMenuItem label={label} controlIcon="fa-angle-down"/>
       </SelectMenuItemButton>
     );
   }
