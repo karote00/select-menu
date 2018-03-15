@@ -15,7 +15,7 @@ class SelectMenuButton extends Component {
   render() {
     return (
       <SelectMenuItemButton>
-        <SelectMenuItem label="Label"/>
+        <SelectMenuItem label="Label" controlIcon="fa-angle-down"/>
       </SelectMenuItemButton>
     );
   }
