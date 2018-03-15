@@ -32,7 +32,7 @@ const SelectMenuItemWrapper = styled.div`
 class SelectMenuItem extends Component {
   render() {
   	const { icon, label, controlIcon } = this.props;
-  	console.warn(controlIcon)
+
   	const iconContent = icon.indexOf('fa-') > -1 ? <div><FA name={icon.substr(3)} /></div> : null;
   	const labelContent = <div>{label}</div>;
   	const controlIconContent = controlIcon.indexOf('fa-') > -1 ?
