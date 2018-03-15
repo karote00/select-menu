@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import SelectMenuButton from './SelectMenuButton';
 import SelectMenu from './SelectMenu';
 
+import '../css/SelectMenu.css';
+
 const propTypes = {
   focusedItem: PropTypes.string,
 };
