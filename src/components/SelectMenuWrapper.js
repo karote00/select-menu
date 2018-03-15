@@ -29,7 +29,7 @@ const defaultProps = {
         addable: false,
       },
       items: [
-        { icon: 'fa-rocket', label: 'rocket', tips: [100, 200, 'fa-car'] },
+        { icon: 'fa-rocket', label: 'rocket', tips: [10, 20, 'fa-car'] },
         { icon: 'fa-play', label: 'play', tips: ['fa-mobile'] },
         { label: 'America', editabled: true },
       ]
