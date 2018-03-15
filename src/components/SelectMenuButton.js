@@ -8,6 +8,7 @@ const SelectMenuItemButton = styled.div`
   background: rgba(0, 0, 0, 0.1);
   border-radius: 3px;
   border: 2px solid rgba(0, 0, 0, 0.4);
+  font-weight: bold;
 `;
 
 class SelectMenuButton extends Component {
