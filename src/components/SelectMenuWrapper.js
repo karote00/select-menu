@@ -49,6 +49,7 @@ class SelectMenuWrapper extends Component {
     this.state = {
       label: props.initialLabel,
       selectMenuIsOpen: false,
+      selectedItems: [],
     };
 
     this.onItemChange = this.onItemChange.bind(this);
@@ -57,8 +58,15 @@ class SelectMenuWrapper extends Component {
     this.onClose = this.onClose.bind(this);
   }
 
-  onItemChange(selectedItems) {
-    this.setState({ label: selectedItems.join(', ').trim() });
+  onItemChange(selectedItem) {
+    const { selectedItems } = this.state;
+
+    if (selectedItems.indexOf(selectedItem) === -1) selectedItems.push(selectedItem);
+
+    this.setState({
+      selectedItems,
+      label: selectedItems.join(', ').trim(),
+    });
   }
 
   onFocusChange(focusedItem) {
@@ -81,9 +89,12 @@ class SelectMenuWrapper extends Component {
       <Wrapper>
         <SelectMenuButton
           label={label}
+        />
+        <SelectMenu
+          isOpen={selectMenuIsOpen}
+          menuDatas={menuDatas}
           onItemChange={this.onItemChange}
         />
-        <SelectMenu isOpen={selectMenuIsOpen} menuDatas={menuDatas} />
       </Wrapper>
     );
   }
