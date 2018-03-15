@@ -8,6 +8,7 @@ const propTypes = {
 	label: PropTypes.string,
 	controlIcon: PropTypes.string,
 	hasIcon: PropTypes.bool,
+	onItemChange: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -15,6 +16,7 @@ const defaultProps = {
 	label: '',
 	controlIcon: '',
 	hasIcon: false,
+	onItemChange() {},
 };
 
 const SelectMenuItemWrapper = styled.div`
@@ -85,8 +87,26 @@ const tipsItem = (tips) => {
 };
 
 class SelectMenuItem extends Component {
+	constructor(props) {
+		super(props);
+
+		this.onItemChange = this.onItemChange.bind(this);
+	}
+
+	onItemChange(e) {
+    const { onItemChange, label } = this.props;
+    onItemChange(label);
+  }
+
   render() {
-  	const { icon, label, controlIcon, hasIcon, tips } = this.props;
+  	const {
+  		icon,
+  		label,
+  		controlIcon,
+  		hasIcon,
+  		tips,
+  		onItemChange,
+  	} = this.props;
 
   	const iconContent = (hasIcon || icon.indexOf('fa-') > -1) ?
   		<div className="icon"><FA name={icon.substr(3)} /></div> : null;
@@ -97,7 +117,9 @@ class SelectMenuItem extends Component {
 
 
     return (
-      <SelectMenuItemWrapper>
+      <SelectMenuItemWrapper
+      	onClick={this.onItemChange}
+      >
       	<SelectMenuItemContentWrapper>
 	      	{iconContent}
 	      	{labelContent}

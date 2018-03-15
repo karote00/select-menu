@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import SelectMenuItem from './SelectMenuItem';
+
+const propTypes = {
+  onItemChange: PropTypes.func.isRequired,
+};
+
+const defaultProps = {
+  onItemChange() {},
+};
 
 const SelectMenuContainer = styled.div`
   background: rgba(0, 0, 0, .1);
@@ -18,7 +27,7 @@ const OptGroup = styled.div`
 
 class SelectMenu extends Component {
   render() {
-    const { menuDatas } = this.props;
+    const { menuDatas, onItemChange } = this.props;
 
     const hasIcon = menuDatas.filter(group => {
       return group.items.filter(item => item.icon && item.icon.indexOf('fa-') > -1).length > 0;
@@ -26,8 +35,19 @@ class SelectMenu extends Component {
 
     const OptGroupContents = menuDatas.map((group, i) => {
       const { meta, items } = group;
-      const itemContents = items.map((item, j) => (<SelectMenuItem hasIcon={hasIcon} key={j} {...item} />));
-      const addItem = meta.addable ? <SelectMenuItem icon="fa-plus" /> : null;
+      const itemContents = items.map((item, j) => (
+        <SelectMenuItem
+          {...item}
+          key={j}
+          hasIcon={hasIcon}
+          onItemChange={onItemChange}
+        />)
+      );
+      const addItem = meta.addable ?
+        <SelectMenuItem
+          icon="fa-plus"
+        />
+        : null;
 
       return (
         <OptGroup key={i}>
@@ -44,5 +64,8 @@ class SelectMenu extends Component {
     );
   }
 }
+
+SelectMenu.propTypes = propTypes;
+SelectMenu.defaultProps = defaultProps;
 
 export default SelectMenu;
