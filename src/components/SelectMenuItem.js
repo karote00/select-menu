@@ -11,7 +11,6 @@ const SelectMenuItemButton = styled.div`
 
 class SelectMenuItem extends Component {
   render() {
-  	console.warn(this.props)
     return (
       <SelectMenuItemButton {...this.props}><div>{this.props.label}</div></SelectMenuItemButton>
     );

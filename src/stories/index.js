@@ -6,8 +6,8 @@ import { linkTo } from '@storybook/addon-links';
 
 import { Button, Welcome } from '@storybook/react/demo';
 
-import SelectMenu from '../components/SelectMenu';
-import SelectMenuItem from '../components/SelectMenuItem';
+
+import SelectMenuWrapper from '../components/SelectMenuWrapper';
 
 storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo('Button')} />);
 
@@ -17,4 +17,4 @@ storiesOf('Button', module)
 
 
 storiesOf('Select Menu Item', module)
-	.add('Select Button', () => <SelectMenu label="Label" />);
+	.add('Select Button', () => <SelectMenuWrapper />);
