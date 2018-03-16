@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import FA from 'react-fontawesome';
+import { connect } from 'react-redux';
+import { test1, test2 } from '../actions';
 
 const propTypes = {
 	icon: PropTypes.string,
@@ -17,6 +19,15 @@ const defaultProps = {
 	controlIcon: '',
 	hasIcon: false,
 	onItemChange() {},
+};
+
+const mapStateToProps = (state) => ({
+	menu: state,
+});
+
+const mapDispatchToProps = {
+	test1,
+	test2,
 };
 
 const SelectMenuItemWrapper = styled.div`
@@ -96,6 +107,7 @@ class SelectMenuItem extends Component {
 	onItemChange(e) {
     const { onItemChange, label } = this.props;
     onItemChange(label);
+    this.props.test2();
   }
 
   render() {
@@ -134,4 +146,4 @@ class SelectMenuItem extends Component {
 SelectMenuItem.propTypes = propTypes;
 SelectMenuItem.defaultProps = defaultProps;
 
-export default SelectMenuItem;
+export default connect(mapStateToProps, mapDispatchToProps)(SelectMenuItem);
