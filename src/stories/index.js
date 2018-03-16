@@ -6,6 +6,8 @@ import { linkTo } from '@storybook/addon-links';
 
 import { Button, Welcome } from '@storybook/react/demo';
 
+import { Provider } from 'react-redux';
+import store from '../stores';
 
 import SelectMenuWrapper from '../components/SelectMenuWrapper';
 
@@ -17,4 +19,4 @@ storiesOf('Button', module)
 
 
 storiesOf('Select Menu Item', module)
-	.add('Select Button', () => <SelectMenuWrapper />);
+	.add('Select Button', () => <Provider store={store}><SelectMenuWrapper /></Provider>);
