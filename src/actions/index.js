@@ -1,16 +1,18 @@
-export const TEST1 = 'TEST1';
-export const TEST2 = 'TEST2'
+export const ITEM_SELECTED = 'ITEM_SELECTED';
+export const ITEM_CANCELED = 'ITEM_CANCELED';
 
-export const test1 = () => ({
-	type: TEST1,
+export const itemSelected = (layer = 1, idx) => ({
+	type: ITEM_SELECTED,
 	payload: {
-		data: TEST1,
+		layer,
+		idx,
 	},
 });
 
-export const test2 = () => ({
-	type: TEST2,
+export const itemCanceled = (layer = 1, idx) => ({
+	type: ITEM_CANCELED,
 	payload: {
-		data: TEST2,
+		layer,
+		idx,
 	},
 });

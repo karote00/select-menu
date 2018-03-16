@@ -5,11 +5,9 @@ import styled from 'styled-components';
 import SelectMenuItem from './SelectMenuItem';
 
 const propTypes = {
-  onItemChange: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
-  onItemChange() {},
 };
 
 const SelectMenuContainer = styled.div`
@@ -27,7 +25,7 @@ const OptGroup = styled.div`
 
 class SelectMenu extends Component {
   render() {
-    const { menuDatas, onItemChange } = this.props;
+    const { menuDatas } = this.props;
 
     const hasIcon = menuDatas.filter(group => {
       return group.items.filter(item => item.icon && item.icon.indexOf('fa-') > -1).length > 0;
@@ -40,7 +38,6 @@ class SelectMenu extends Component {
           {...item}
           key={j}
           hasIcon={hasIcon}
-          onItemChange={onItemChange}
         />)
       );
       const addItem = meta.addable ?

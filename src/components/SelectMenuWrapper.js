@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 
 import SelectMenuButton from './SelectMenuButton';
 import SelectMenu from './SelectMenu';
@@ -13,28 +14,13 @@ const propTypes = {
 
 const defaultProps = {
   initialLabel: null,
+};
 
-  menuDatas: [
-    {
-      meta: {
-        addable: false,
-      },
-      items: [
-        { icon: 'fa-rocket', label: 'rocket', tips: [100, 200, 'fa-mobile'] },
-        { label: 'smiley', disabled: true },
-      ]
-    },
-    {
-      meta: {
-        addable: false,
-      },
-      items: [
-        { icon: 'fa-rocket', label: 'rocket', tips: [10, 20, 'fa-car'] },
-        { icon: 'fa-play', label: 'play', tips: ['fa-mobile'] },
-        { label: 'America', editabled: true },
-      ]
-    }
-  ],
+const mapStateToProps = (state) => ({
+  menuData: state,
+});
+
+const mapDispatchToProps = {
 };
 
 const Wrapper = styled.div`
@@ -52,22 +38,22 @@ class SelectMenuWrapper extends Component {
       selectedItems: [],
     };
 
-    this.onItemChange = this.onItemChange.bind(this);
+    // this.onItemChange = this.onItemChange.bind(this);
     this.onFocusChange = this.onFocusChange.bind(this);
     this.onOpen = this.onOpen.bind(this);
     this.onClose = this.onClose.bind(this);
   }
 
-  onItemChange(selectedItem) {
-    const { selectedItems } = this.state;
+  // onItemChange(selectedItem) {
+  //   const { selectedItems } = this.state;
 
-    if (selectedItems.indexOf(selectedItem) === -1) selectedItems.push(selectedItem);
+  //   if (selectedItems.indexOf(selectedItem) === -1) selectedItems.push(selectedItem);
 
-    this.setState({
-      selectedItems,
-      label: selectedItems.join(', ').trim(),
-    });
-  }
+  //   this.setState({
+  //     selectedItems,
+  //     label: selectedItems.join(', ').trim(),
+  //   });
+  // }
 
   onFocusChange(focusedItem) {
     this.setState({ focusedItem });
@@ -82,7 +68,7 @@ class SelectMenuWrapper extends Component {
   }
 
   render() {
-    const { menuDatas } = this.props;
+    const { menuData } = this.props;
     const { label, selectMenuIsOpen } = this.state;
 
     return (
@@ -92,8 +78,7 @@ class SelectMenuWrapper extends Component {
         />
         <SelectMenu
           isOpen={selectMenuIsOpen}
-          menuDatas={menuDatas}
-          onItemChange={this.onItemChange}
+          menuDatas={menuData}
         />
       </Wrapper>
     );
@@ -103,4 +88,4 @@ class SelectMenuWrapper extends Component {
 SelectMenuWrapper.propTypes = propTypes;
 SelectMenuWrapper.defaultProps = defaultProps;
 
-export default SelectMenuWrapper;
+export default connect(mapStateToProps, mapDispatchToProps)(SelectMenuWrapper);

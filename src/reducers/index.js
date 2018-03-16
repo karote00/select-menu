@@ -1,13 +1,19 @@
-import { TEST1, TEST2 } from '../actions';
+import { ITEM_SELECTED, ITEM_CANCELED } from '../actions';
 
-const reducers = (state = [], action) => {
+
+
+const reducers = (state = initialState, action) => {
 	switch (action.type) {
-		case TEST1:
-			return 'test1';
-		case TEST2:
-			return 'test2';
+		case ITEM_SELECTED:
+			return [
+				...state
+			];
+		case ITEM_CANCELED:
+			return [
+				...state
+			];
 		default:
-			return 'test1';
+			return state;
 	}
 }
 

@@ -3,14 +3,16 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import FA from 'react-fontawesome';
 import { connect } from 'react-redux';
-import { test1, test2 } from '../actions';
+
+import { itemSelected, itemCanceled } from '../actions';
 
 const propTypes = {
 	icon: PropTypes.string,
 	label: PropTypes.string,
 	controlIcon: PropTypes.string,
 	hasIcon: PropTypes.bool,
-	onItemChange: PropTypes.func.isRequired,
+	itemSelected: PropTypes.func.isRequired,
+	itemCanceled: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -18,16 +20,15 @@ const defaultProps = {
 	label: '',
 	controlIcon: '',
 	hasIcon: false,
-	onItemChange() {},
 };
 
 const mapStateToProps = (state) => ({
-	menu: state,
+	menuData: state,
 });
 
 const mapDispatchToProps = {
-	test1,
-	test2,
+	itemSelected,
+	itemCanceled,
 };
 
 const SelectMenuItemWrapper = styled.div`
@@ -105,9 +106,12 @@ class SelectMenuItem extends Component {
 	}
 
 	onItemChange(e) {
-    const { onItemChange, label } = this.props;
-    onItemChange(label);
-    this.props.test2();
+    const { label, menuData } = this.props;
+    const item = menuData.reduce((sum, group) => sum.concat(group.items), [])
+    	.filter(t => t.label === label)[0];
+
+    if (item) this.props.itemCanceled(label);
+    else this.props.itemSelected(label);
   }
 
   render() {
@@ -117,7 +121,6 @@ class SelectMenuItem extends Component {
   		controlIcon,
   		hasIcon,
   		tips,
-  		onItemChange,
   	} = this.props;
 
   	const iconContent = (hasIcon || icon.indexOf('fa-') > -1) ?
