@@ -132,10 +132,8 @@ class SelectMenuItem extends Component {
 
 
     return (
-      <SelectMenuItemWrapper
-      	onClick={this.onItemChange}
-      >
-      	<SelectMenuItemContentWrapper>
+      <SelectMenuItemWrapper>
+      	<SelectMenuItemContentWrapper onClick={this.onItemChange}>
 	      	{iconContent}
 	      	{labelContent}
 	      	{controlIconContent}
