@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import SelectMenuItem from './SelectMenuItem';
 
 const propTypes = {
+  layer: PropTypes.number.isRequired,
 };
 
 const defaultProps = {
@@ -25,13 +26,13 @@ const OptGroup = styled.div`
 
 class SelectMenu extends Component {
   render() {
-    const { menuDatas } = this.props;
+    const { menu } = this.props;
 
-    const hasIcon = menuDatas.filter(group => {
+    const hasIcon = menu.filter(group => {
       return group.items.filter(item => item.icon && item.icon.indexOf('fa-') > -1).length > 0;
     }).length > 0;
 
-    const OptGroupContents = menuDatas.map((group, i) => {
+    const OptGroupContents = menu.map((group, i) => {
       const { meta, items } = group;
       const itemContents = items.map((item, j) => (
         <SelectMenuItem
