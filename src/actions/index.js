@@ -1,18 +1,16 @@
 export const ITEM_SELECTED = 'ITEM_SELECTED';
 export const ITEM_CANCELED = 'ITEM_CANCELED';
 
-export const itemSelected = (layer = 1, idx) => ({
+export const itemSelected = (itemKey) => ({
 	type: ITEM_SELECTED,
 	payload: {
-		layer,
-		idx,
+		itemKey,
 	},
 });
 
-export const itemCanceled = (layer = 1, idx) => ({
+export const itemCanceled = (itemKey) => ({
 	type: ITEM_CANCELED,
 	payload: {
-		layer,
-		idx,
+		itemKey,
 	},
 });
