@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import FA from 'react-fontawesome';
 import { connect } from 'react-redux';
 
-import { itemSelected, itemCanceled } from '../actions';
+import { itemSelected, itemDelete } from '../actions';
 import { isFA, FAIcon } from '../utils/Icon';
 
 const propTypes = {
@@ -20,7 +20,7 @@ const propTypes = {
 
 	// Actions
 	itemSelected: PropTypes.func.isRequired,
-	itemCanceled: PropTypes.func.isRequired,
+	itemDelete: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -36,7 +36,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
 	itemSelected,
-	itemCanceled,
+	itemDelete,
 };
 
 const SelectMenuItemWrapper = styled.div`
@@ -76,12 +76,18 @@ const SelectMenuItemWrapper = styled.div`
 	}
 
 	&:hover {
+		background: rgba(0, 0, 0, .05);
+
 		.edit_content {
+			transform: translateX(calc(100% - 3.2em));
+
 			.icon span:hover {
 				color: rgba(0, 0, 0, .6);
 			}
 
-			transform: translateX(0);
+			&.delete_clicked {
+				transform: translateX(calc(33.3% - 1.6em + 4px));
+			}
 		}
 	}
 `;
@@ -102,12 +108,36 @@ const EditableContent = styled.div`
 	right: 0;
 	transition: transform .1s linear;
 	transform: translateX(100%);
-	padding: 4px;
+	padding: 4px 0;
+	width: 150%;
+	background: rgb(217, 217, 217);
 
 	span {
 		width: 1em;
 		padding: 0 4px;
 		color: rgba(0, 0, 0, .3);
+	}
+
+	.delete_content {
+		width: unset;
+
+		span {
+			width: unset;
+		}
+
+		.controls {
+			padding-left: 8px;
+
+			span {
+				font-weight: bold;
+				text-decoration: underline;
+				padding: 0 8px;
+
+				&:hover {
+					color: rgba(0, 0, 0, .6);
+				}
+			}
+		}
 	}
 `;
 
@@ -158,25 +188,72 @@ const checkContent = (selectable, selected) => {
 	return null;
 };
 
-const editContent = (editable, tips) => {
-	return editable &&
-		[
-			<span className="icon">{FAIcon('fa-edit')}</span>,
-			<span className="icon">{FAIcon('fa-trash')}</span>
-		];
-};
-
 class SelectMenuItem extends Component {
 	constructor(props) {
 		super(props);
 
+		this.state = {
+			deleteClicked: false,
+			selectMenuItemHover: false,
+		};
+
 		this.onItemChange = this.onItemChange.bind(this);
+		this.handleSelectMenuItemMouseHover = this.handleSelectMenuItemMouseHover.bind(this);
+		this.handleSelectMenuItemMouseLeave = this.handleSelectMenuItemMouseLeave.bind(this);
+		this.cancelSelectMenuItemHover = this.cancelSelectMenuItemHover.bind(this);
+		this.handleDeleteClick = this.handleDeleteClick.bind(this);
+		this.handleDeleteItem = this.handleDeleteItem.bind(this);
+		this.handleCancelEditable = this.handleCancelEditable.bind(this);
 	}
 
 	onItemChange(e) {
     const { itemKey } = this.props;
     this.props.itemSelected(itemKey);
   }
+
+  editContent(editable, tips) {
+  	const { deleteClicked, selectMenuItemHover } = this.state;
+
+		return editable &&
+			<EditableContent
+    		className={`edit_content ${deleteClicked ? 'delete_clicked' : ''}`}
+    	>
+				<span key="1" className="icon">{FAIcon('fa-edit')}</span>
+				<span key="2" className="icon" onClick={this.handleDeleteClick}>{FAIcon('fa-trash')}</span>
+				<span key="3" className="delete_content">
+					Are You Sure?
+					<span className="controls">
+						<span onClick={this.handleDeleteItem}>Yes</span>
+						<span onClick={this.handleCancelEditable}>No</span>
+					</span>
+				</span>
+			</EditableContent>;
+	};
+
+	cancelSelectMenuItemHover() {
+		this.setState({ selectMenuItemHover: false, deleteClicked: false });
+	}
+
+	handleDeleteItem() {
+    const { itemKey, layer } = this.props;
+		this.props.itemDelete(itemKey, layer);
+	}
+
+	handleDeleteClick() {
+		this.setState({ deleteClicked: true });
+	}
+
+	handleCancelEditable() {
+		this.cancelSelectMenuItemHover();
+	}
+
+	handleSelectMenuItemMouseHover() {
+		this.setState({ selectMenuItemHover: true });
+	}
+
+	handleSelectMenuItemMouseLeave() {
+		this.cancelSelectMenuItemHover();
+	}
 
   render() {
   	const {
@@ -191,7 +268,10 @@ class SelectMenuItem extends Component {
   	} = this.props;
 
     return (
-      <SelectMenuItemWrapper>
+      <SelectMenuItemWrapper
+    		onMouseEnter={this.handleSelectMenuItemMouseHover}
+    		onMouseLeave={this.handleSelectMenuItemMouseLeave}
+      >
       	<SelectMenuItemContentWrapper onClick={this.onItemChange}>
       		{checkContent(selectable, selected)}
 	      	{iconContent(icon, hasIcon, selectable)}
@@ -199,9 +279,7 @@ class SelectMenuItem extends Component {
 	      	{controlIconContent(controlIcon)}
 	      	{tipsContent(tips)}
 	      </SelectMenuItemContentWrapper>
-      	<EditableContent className="edit_content">
-      		{editContent(editable)}
-      	</EditableContent>
+    		{this.editContent(editable)}
       </SelectMenuItemWrapper>
     );
   }

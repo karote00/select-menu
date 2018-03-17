@@ -24,7 +24,7 @@ const mapDispatchToProps = {
 };
 
 const Wrapper = styled.div`
-  width: 200px;
+  width: 250px;
   color: rgba(0, 0, 0, .5);
 `;
 
@@ -82,7 +82,7 @@ class SelectMenuWrapper extends Component {
           label={label}
         />
         <SelectMenu
-          layer={1}
+          layer="main"
           isOpen={selectMenuIsOpen}
           menu={menu}
         />

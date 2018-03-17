@@ -1,5 +1,5 @@
 export const ITEM_SELECTED = 'ITEM_SELECTED';
-export const ITEM_CANCELED = 'ITEM_CANCELED';
+export const ITEM_DELETE = 'ITEM_DELETE';
 
 export const itemSelected = (itemKey) => ({
 	type: ITEM_SELECTED,
@@ -8,9 +8,10 @@ export const itemSelected = (itemKey) => ({
 	},
 });
 
-export const itemCanceled = (itemKey) => ({
-	type: ITEM_CANCELED,
+export const itemDelete = (itemKey, layer = 'main') => ({
+	type: ITEM_DELETE,
 	payload: {
 		itemKey,
+		layer,
 	},
 });

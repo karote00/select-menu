@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import SelectMenuItem from './SelectMenuItem';
 
 const propTypes = {
-  layer: PropTypes.number.isRequired,
+  layer: PropTypes.string.isRequired,
 };
 
 const defaultProps = {
@@ -26,7 +26,7 @@ const OptGroup = styled.div`
 
 class SelectMenu extends Component {
   render() {
-    const { menu } = this.props;
+    const { menu, layer } = this.props;
 
     const hasIcon = menu.filter(group => {
       return group.items.filter(item => item.icon && item.icon.indexOf('fa-') > -1).length > 0;
@@ -38,6 +38,7 @@ class SelectMenu extends Component {
         <SelectMenuItem
           {...item}
           key={j}
+          layer={layer}
           hasIcon={hasIcon}
         />)
       );
