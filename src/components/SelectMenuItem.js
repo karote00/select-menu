@@ -98,6 +98,24 @@ const tipsItem = (tips) => {
 	return tipsContent;
 };
 
+const iconContent = (icon, hasIcon) => {
+	return (hasIcon || icon.indexOf('fa-') > -1) ?
+		<div className="icon"><FA name={icon.substr(3)} /></div> : null;
+}
+
+const labelContent = (label, tips) => {
+	return <div className={`label ${tips ? 'hasTips' : ''}`}>{label}</div>;
+}
+
+const controlIconContent = controlIcon => {
+	return controlIcon.indexOf('fa-') > -1 ?
+		<div className="fl-r"><FA name={controlIcon.substr(3)} /></div> : null;
+}
+
+const tipsContent = tips => {
+	return tips && <div className="fl-r tips">{tipsItem(tips)}</div>;
+}
+
 class SelectMenuItem extends Component {
 	constructor(props) {
 		super(props);
@@ -106,12 +124,8 @@ class SelectMenuItem extends Component {
 	}
 
 	onItemChange(e) {
-    const { label, menuData } = this.props;
-    const item = menuData.reduce((sum, group) => sum.concat(group.items), [])
-    	.filter(t => t.label === label)[0];
-
-    if (item) this.props.itemCanceled(label);
-    else this.props.itemSelected(label);
+    const { itemKey } = this.props;
+    this.props.itemSelected(itemKey);
   }
 
   render() {
@@ -123,21 +137,13 @@ class SelectMenuItem extends Component {
   		tips,
   	} = this.props;
 
-  	const iconContent = (hasIcon || icon.indexOf('fa-') > -1) ?
-  		<div className="icon"><FA name={icon.substr(3)} /></div> : null;
-  	const labelContent = <div className={`label ${tips ? 'hasTips' : ''}`}>{label}</div>;
-  	const controlIconContent = controlIcon.indexOf('fa-') > -1 ?
-  		<div className="fl-r"><FA name={controlIcon.substr(3)} /></div> : null;
-  	const tipsContent = tips && <div className="fl-r tips">{tipsItem(tips)}</div>;
-
-
     return (
       <SelectMenuItemWrapper>
       	<SelectMenuItemContentWrapper onClick={this.onItemChange}>
-	      	{iconContent}
-	      	{labelContent}
-	      	{controlIconContent}
-	      	{tipsContent}
+	      	{iconContent(icon, hasIcon)}
+	      	{labelContent(label, tips)}
+	      	{controlIconContent(controlIcon)}
+	      	{tipsContent(tips)}
 	      </SelectMenuItemContentWrapper>
       </SelectMenuItemWrapper>
     );
