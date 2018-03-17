@@ -40,6 +40,7 @@ const mapDispatchToProps = {
 };
 
 const SelectMenuItemWrapper = styled.div`
+	position: relative;
 	cursor: pointer;
 	overflow: hidden;
 
@@ -65,12 +66,22 @@ const SelectMenuItemWrapper = styled.div`
 
 	.tips {
 		.icon {
-			width: 1em;
+			width: 1.6em;
 		}
 
 		> span {
 			padding: 0 4px;
 			color: rgba(0, 0, 0, .3);
+		}
+	}
+
+	&:hover {
+		.edit_content {
+			.icon span:hover {
+				color: rgba(0, 0, 0, .6);
+			}
+
+			transform: translateX(0);
 		}
 	}
 `;
@@ -81,7 +92,22 @@ const SelectMenuItemContentWrapper = styled.div`
   display: flex;
 
 	> div {
-		padding: 4px 8px;
+		padding: 4px;
+	}
+`;
+
+const EditableContent = styled.div`
+	position: absolute;
+	top: 0;
+	right: 0;
+	transition: transform .1s linear;
+	transform: translateX(100%);
+	padding: 4px;
+
+	span {
+		width: 1em;
+		padding: 0 4px;
+		color: rgba(0, 0, 0, .3);
 	}
 `;
 
@@ -133,7 +159,11 @@ const checkContent = (selectable, selected) => {
 };
 
 const editContent = (editable, tips) => {
-
+	return editable &&
+		[
+			<span className="icon">{FAIcon('fa-edit')}</span>,
+			<span className="icon">{FAIcon('fa-trash')}</span>
+		];
 };
 
 class SelectMenuItem extends Component {
@@ -169,6 +199,9 @@ class SelectMenuItem extends Component {
 	      	{controlIconContent(controlIcon)}
 	      	{tipsContent(tips)}
 	      </SelectMenuItemContentWrapper>
+      	<EditableContent className="edit_content">
+      		{editContent(editable)}
+      	</EditableContent>
       </SelectMenuItemWrapper>
     );
   }
