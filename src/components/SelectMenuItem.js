@@ -5,12 +5,20 @@ import FA from 'react-fontawesome';
 import { connect } from 'react-redux';
 
 import { itemSelected, itemCanceled } from '../actions';
+import { isFA, FAIcon } from '../utils/Icon';
 
 const propTypes = {
+	// Props
 	icon: PropTypes.string,
 	label: PropTypes.string,
 	controlIcon: PropTypes.string,
 	hasIcon: PropTypes.bool,
+	tips: PropTypes.array,
+	selectable: PropTypes.bool,
+	selected: PropTypes.bool,
+	editable: PropTypes.bool,
+
+	// Actions
 	itemSelected: PropTypes.func.isRequired,
 	itemCanceled: PropTypes.func.isRequired,
 };
@@ -83,8 +91,8 @@ const tipsItem = (tips) => {
 		case 'object':
 			if (tips.length) {
 				tipsContent = tips.map((tip, i) => {
-					if (typeof tip === 'string' && tip.indexOf('fa-') > -1) {
-						return <FA key={i} className="icon" name={tip.substr(3)} />
+					if (typeof tip === 'string' && isFA(tip)) {
+						return FAIcon(tip, { key: i, className: 'icon'});
 					}
 					return (<span key={i}>{tip}</span>);
 				});
@@ -101,8 +109,7 @@ const tipsItem = (tips) => {
 const iconContent = (icon, hasIcon, selectable) => {
 	const needEmptyIcon = selectable ? false : hasIcon;
 
-	return (needEmptyIcon || icon.indexOf('fa-') > -1) ?
-		<div className="icon"><FA name={icon.substr(3)} /></div> : null;
+	return (needEmptyIcon || isFA(icon)) ? <div className="icon">{FAIcon(icon)}</div> : null;
 };
 
 const labelContent = (label, tips) => {
@@ -110,8 +117,7 @@ const labelContent = (label, tips) => {
 };
 
 const controlIconContent = controlIcon => {
-	return controlIcon.indexOf('fa-') > -1 ?
-		<div className="fl-r"><FA name={controlIcon.substr(3)} /></div> : null;
+	return isFA(controlIcon) ? <div className="fl-r">{FAIcon(controlIcon)}</div> : null;
 };
 
 const tipsContent = tips => {
@@ -119,12 +125,15 @@ const tipsContent = tips => {
 };
 
 const checkContent = (selectable, selected) => {
-	console.warn(selectable, selected);
 	if (selectable) {
-		return <div className="icon"><FA name={`${selected ? 'check' : ''}`} /></div>;
+		return <div className="icon">{FAIcon(selected ? 'fa-check' : '')}</div>;
 	}
 
 	return null;
+};
+
+const editContent = (editable, tips) => {
+
 };
 
 class SelectMenuItem extends Component {
@@ -148,6 +157,7 @@ class SelectMenuItem extends Component {
   		tips,
   		selectable,
   		selected,
+  		editable,
   	} = this.props;
 
     return (
