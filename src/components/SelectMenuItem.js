@@ -98,23 +98,34 @@ const tipsItem = (tips) => {
 	return tipsContent;
 };
 
-const iconContent = (icon, hasIcon) => {
-	return (hasIcon || icon.indexOf('fa-') > -1) ?
+const iconContent = (icon, hasIcon, selectable) => {
+	const needEmptyIcon = selectable ? false : hasIcon;
+
+	return (needEmptyIcon || icon.indexOf('fa-') > -1) ?
 		<div className="icon"><FA name={icon.substr(3)} /></div> : null;
-}
+};
 
 const labelContent = (label, tips) => {
 	return <div className={`label ${tips ? 'hasTips' : ''}`}>{label}</div>;
-}
+};
 
 const controlIconContent = controlIcon => {
 	return controlIcon.indexOf('fa-') > -1 ?
 		<div className="fl-r"><FA name={controlIcon.substr(3)} /></div> : null;
-}
+};
 
 const tipsContent = tips => {
 	return tips && <div className="fl-r tips">{tipsItem(tips)}</div>;
-}
+};
+
+const checkContent = (selectable, selected) => {
+	console.warn(selectable, selected);
+	if (selectable) {
+		return <div className="icon"><FA name={`${selected ? 'check' : ''}`} /></div>;
+	}
+
+	return null;
+};
 
 class SelectMenuItem extends Component {
 	constructor(props) {
@@ -135,12 +146,15 @@ class SelectMenuItem extends Component {
   		controlIcon,
   		hasIcon,
   		tips,
+  		selectable,
+  		selected,
   	} = this.props;
 
     return (
       <SelectMenuItemWrapper>
       	<SelectMenuItemContentWrapper onClick={this.onItemChange}>
-	      	{iconContent(icon, hasIcon)}
+      		{checkContent(selectable, selected)}
+	      	{iconContent(icon, hasIcon, selectable)}
 	      	{labelContent(label, tips)}
 	      	{controlIconContent(controlIcon)}
 	      	{tipsContent(tips)}
