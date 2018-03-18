@@ -13,7 +13,6 @@ const propTypes = {
 };
 
 const defaultProps = {
-  initialLabel: null,
 };
 
 const mapStateToProps = (state) => ({
@@ -33,27 +32,14 @@ class SelectMenuWrapper extends Component {
     super(props);
 
     this.state = {
-      label: props.initialLabel,
       selectMenuIsOpen: false,
       selectedItems: [],
     };
 
-    // this.onItemChange = this.onItemChange.bind(this);
     this.onFocusChange = this.onFocusChange.bind(this);
     this.onOpen = this.onOpen.bind(this);
     this.onClose = this.onClose.bind(this);
   }
-
-  // onItemChange(selectedItem) {
-  //   const { selectedItems } = this.state;
-
-  //   if (selectedItems.indexOf(selectedItem) === -1) selectedItems.push(selectedItem);
-
-  //   this.setState({
-  //     selectedItems,
-  //     label: selectedItems.join(', ').trim(),
-  //   });
-  // }
 
   onFocusChange(focusedItem) {
     this.setState({ focusedItem });
@@ -69,7 +55,7 @@ class SelectMenuWrapper extends Component {
 
   render() {
     const { menuData } = this.props;
-    const { label, selectMenuIsOpen } = this.state;
+    const { selectMenuIsOpen } = this.state;
 
     const menu = menuData.main.map(m => ({
       ...m,
@@ -79,7 +65,7 @@ class SelectMenuWrapper extends Component {
     return (
       <Wrapper>
         <SelectMenuButton
-          label={label}
+          label={menuData.buttonLabel}
         />
         <SelectMenu
           layer="main"

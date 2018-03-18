@@ -4,7 +4,9 @@ import styled from 'styled-components';
 import FA from 'react-fontawesome';
 import { connect } from 'react-redux';
 
-import { itemSelected, itemDelete } from '../actions';
+import SelectMenuItemContent from './SelectMenuItemContent';
+
+import { itemSelected, itemDelete, itemEdit } from '../actions';
 import { isFA, FAIcon } from '../utils/Icon';
 
 const propTypes = {
@@ -21,6 +23,7 @@ const propTypes = {
 	// Actions
 	itemSelected: PropTypes.func.isRequired,
 	itemDelete: PropTypes.func.isRequired,
+	itemEdit: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -37,16 +40,13 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
 	itemSelected,
 	itemDelete,
+	itemEdit,
 };
 
 const SelectMenuItemWrapper = styled.div`
 	position: relative;
 	cursor: pointer;
 	overflow: hidden;
-
-	.fl-r {
-		float: right;
-	}
 
 	.label {
 		flex: 1;
@@ -92,16 +92,6 @@ const SelectMenuItemWrapper = styled.div`
 	}
 `;
 
-const SelectMenuItemContentWrapper = styled.div`
-	display: -webkit-flex;
-  display: -moz-flex;
-  display: flex;
-
-	> div {
-		padding: 4px;
-	}
-`;
-
 const EditableContent = styled.div`
 	position: absolute;
 	top: 0;
@@ -141,53 +131,6 @@ const EditableContent = styled.div`
 	}
 `;
 
-const tipsItem = (tips) => {
-	let tipsContent = null;
-	switch (typeof tips) {
-		case 'object':
-			if (tips.length) {
-				tipsContent = tips.map((tip, i) => {
-					if (typeof tip === 'string' && isFA(tip)) {
-						return FAIcon(tip, { key: i, className: 'icon'});
-					}
-					return (<span key={i}>{tip}</span>);
-				});
-			}
-			break;
-		default:
-			tipsContent = tips && (<span>{tips}</span>) || null;
-			break;
-	}
-
-	return tipsContent;
-};
-
-const iconContent = (icon, hasIcon, selectable) => {
-	const needEmptyIcon = selectable ? false : hasIcon;
-
-	return (needEmptyIcon || isFA(icon)) ? <div className="icon">{FAIcon(icon)}</div> : null;
-};
-
-const labelContent = (label, tips) => {
-	return <div className={`label ${tips ? 'hasTips' : ''}`}>{label}</div>;
-};
-
-const controlIconContent = controlIcon => {
-	return isFA(controlIcon) ? <div className="fl-r">{FAIcon(controlIcon)}</div> : null;
-};
-
-const tipsContent = tips => {
-	return tips && <div className="fl-r tips">{tipsItem(tips)}</div>;
-};
-
-const checkContent = (selectable, selected) => {
-	if (selectable) {
-		return <div className="icon">{FAIcon(selected ? 'fa-check' : '')}</div>;
-	}
-
-	return null;
-};
-
 class SelectMenuItem extends Component {
 	constructor(props) {
 		super(props);
@@ -204,6 +147,7 @@ class SelectMenuItem extends Component {
 		this.handleDeleteClick = this.handleDeleteClick.bind(this);
 		this.handleDeleteItem = this.handleDeleteItem.bind(this);
 		this.handleCancelEditable = this.handleCancelEditable.bind(this);
+		this.handleEditItem = this.handleEditItem.bind(this);
 	}
 
 	onItemChange(e) {
@@ -218,7 +162,7 @@ class SelectMenuItem extends Component {
 			<EditableContent
     		className={`edit_content ${deleteClicked ? 'delete_clicked' : ''}`}
     	>
-				<span key="1" className="icon">{FAIcon('fa-edit')}</span>
+				<span key="1" className="icon" onClick={this.handleEditItem}>{FAIcon('fa-edit')}</span>
 				<span key="2" className="icon" onClick={this.handleDeleteClick}>{FAIcon('fa-trash')}</span>
 				<span key="3" className="delete_content">
 					Are You Sure?
@@ -232,6 +176,11 @@ class SelectMenuItem extends Component {
 
 	cancelSelectMenuItemHover() {
 		this.setState({ selectMenuItemHover: false, deleteClicked: false });
+	}
+
+	handleEditItem() {
+		const { itemKey } = this.props;
+		this.props.itemEdit(itemKey);
 	}
 
 	handleDeleteItem() {
@@ -256,29 +205,14 @@ class SelectMenuItem extends Component {
 	}
 
   render() {
-  	const {
-  		icon,
-  		label,
-  		controlIcon,
-  		hasIcon,
-  		tips,
-  		selectable,
-  		selected,
-  		editable,
-  	} = this.props;
+  	const { editable } = this.props;
 
     return (
       <SelectMenuItemWrapper
     		onMouseEnter={this.handleSelectMenuItemMouseHover}
     		onMouseLeave={this.handleSelectMenuItemMouseLeave}
       >
-      	<SelectMenuItemContentWrapper onClick={this.onItemChange}>
-      		{checkContent(selectable, selected)}
-	      	{iconContent(icon, hasIcon, selectable)}
-	      	{labelContent(label, tips)}
-	      	{controlIconContent(controlIcon)}
-	      	{tipsContent(tips)}
-	      </SelectMenuItemContentWrapper>
+      	<SelectMenuItemContent onClick={this.onItemChange} {...this.props} />
     		{this.editContent(editable)}
       </SelectMenuItemWrapper>
     );
