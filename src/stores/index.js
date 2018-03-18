@@ -17,6 +17,7 @@ const menuItems = {
   	selectable: true,
   	selected: false,
   	editable: true,
+  	edited: false,
   },
   3: {
   	itemKey: 3,
@@ -41,6 +42,7 @@ const menuItems = {
 };
 
 const initialState = {
+	buttonLabel: 'Label',
 	main: [{
 		meta: {
 			addable: false,

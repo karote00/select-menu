@@ -1,4 +1,4 @@
-import { ITEM_SELECTED, ITEM_DELETE } from '../actions';
+import { ITEM_SELECTED, ITEM_DELETE, ITEM_EDIT } from '../actions';
 
 const menu = (state, action) => {
 	switch (action.type) {
@@ -19,8 +19,9 @@ const menu = (state, action) => {
 
 const menuItems = (state, action) => {
 	switch (action.type) {
-		case ITEM_SELECTED:
-			const item = state[action.payload.itemKey];
+		case ITEM_SELECTED: {
+			const itemKey = action.payload.itemKey;
+			const item = state[itemKey];
 
 			if (item.selectable && !item.icon) {
 				item.selected = !item.selected;
@@ -28,8 +29,20 @@ const menuItems = (state, action) => {
 
 			return {
 				...state,
-				[action.payload.itemKey]: item,
+				[itemKey]: item,
 			};
+		}
+		case ITEM_EDIT: {
+			const itemKey = action.payload.itemKey;
+			const item = state[itemKey];
+
+			if (item.editable) item.edited = !item.edited;
+
+			return {
+				...state,
+				[itemKey]: item,
+			};
+		}
 		default:
 			return state;
 	}
