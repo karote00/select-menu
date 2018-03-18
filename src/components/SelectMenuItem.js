@@ -59,14 +59,14 @@ const SelectMenuItemWrapper = styled.div`
 	}
 
 	.icon {
-		width: 1.6em;
+		width: calc(1.6em + 8px);
 		padding: 4px 0;
 		text-align: center;
 	}
 
 	.tips {
 		.icon {
-			width: 1.6em;
+			width: calc(1.6em + 8px);
 		}
 
 		> span {
@@ -78,7 +78,7 @@ const SelectMenuItemWrapper = styled.div`
 	&:hover {
 		background: rgba(0, 0, 0, .05);
 
-		.edit_content {
+		.edit_content.has_hover {
 			transform: translateX(calc(100% - 3.2em));
 
 			.icon span:hover {
@@ -87,6 +87,10 @@ const SelectMenuItemWrapper = styled.div`
 
 			&.delete_clicked {
 				transform: translateX(calc(33.3% - 1.6em + 4px));
+
+				.delete span {
+					color: rgba(0, 0, 0, .6);
+				}
 			}
 		}
 	}
@@ -103,7 +107,7 @@ const EditableContent = styled.div`
 	background: rgb(217, 217, 217);
 
 	span {
-		width: 1em;
+		width: calc(1em + 8px);
 		padding: 0 4px;
 		color: rgba(0, 0, 0, .3);
 	}
@@ -151,19 +155,22 @@ class SelectMenuItem extends Component {
 	}
 
 	onItemChange(e) {
-    const { itemKey } = this.props;
-    this.props.itemSelected(itemKey);
+    const { itemKey, editable, edited } = this.props;
+    if (!editable || (editable && !edited)) {
+    	this.props.itemSelected(itemKey);
+    }
   }
 
-  editContent(editable, tips) {
+  editContent() {
+  	const { editable, edited } = this.props;
   	const { deleteClicked, selectMenuItemHover } = this.state;
 
 		return editable &&
 			<EditableContent
-    		className={`edit_content ${deleteClicked ? 'delete_clicked' : ''}`}
+    		className={`edit_content ${(editable && edited) ? '' : 'has_hover'} ${deleteClicked ? 'delete_clicked' : ''}`}
     	>
-				<span key="1" className="icon" onClick={this.handleEditItem}>{FAIcon('fa-edit')}</span>
-				<span key="2" className="icon" onClick={this.handleDeleteClick}>{FAIcon('fa-trash')}</span>
+				<span key="1" className="icon edit" onClick={this.handleEditItem}>{FAIcon('fa-edit')}</span>
+				<span key="2" className="icon delete" onClick={this.handleDeleteClick}>{FAIcon('fa-trash')}</span>
 				<span key="3" className="delete_content">
 					Are You Sure?
 					<span className="controls">
@@ -180,7 +187,7 @@ class SelectMenuItem extends Component {
 
 	handleEditItem() {
 		const { itemKey } = this.props;
-		this.props.itemEdit(itemKey);
+		this.props.itemEdit(itemKey, true);
 	}
 
 	handleDeleteItem() {
@@ -205,15 +212,13 @@ class SelectMenuItem extends Component {
 	}
 
   render() {
-  	const { editable } = this.props;
-
     return (
       <SelectMenuItemWrapper
     		onMouseEnter={this.handleSelectMenuItemMouseHover}
     		onMouseLeave={this.handleSelectMenuItemMouseLeave}
       >
       	<SelectMenuItemContent onClick={this.onItemChange} {...this.props} />
-    		{this.editContent(editable)}
+    		{this.editContent()}
       </SelectMenuItemWrapper>
     );
   }

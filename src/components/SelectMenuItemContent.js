@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import FA from 'react-fontawesome';
 import { connect } from 'react-redux';
 
+import { itemEdit } from '../actions';
 import { isFA, FAIcon } from '../utils/Icon';
 
 const propTypes = {
@@ -19,6 +20,7 @@ const propTypes = {
 
 	// Event
 	onClick: PropTypes.func,
+	itemEdit: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -34,6 +36,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
+	itemEdit,
 };
 
 const SelectMenuItemContentWrapper = styled.div`
@@ -47,6 +50,22 @@ const SelectMenuItemContentWrapper = styled.div`
 
 	.fl-r {
 		float: right;
+	}
+
+	.label {
+		input[type="text"] {
+    	border: none;
+	    width: 100%;
+	    height: 100%;
+	    padding: 4px;
+	    font-size: 1rem;
+	    outline: none;
+	    background: transparent;
+		}
+
+		&.edited {
+			padding: 0;
+		}
 	}
 `;
 
@@ -72,6 +91,18 @@ const tipsItem = (tips) => {
 };
 
 class SelectMenuItemContent extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			editInput: props.label,
+		};
+
+		this.handleInputFocus = this.handleInputFocus.bind(this);
+		this.handleInputChange = this.handleInputChange.bind(this);
+		this.handleInputKeyUp = this.handleInputKeyUp.bind(this);
+	}
+
 	iconContent() {
 		const { icon, hasIcon, selectable } = this.props;
 		const needEmptyIcon = selectable ? false : hasIcon;
@@ -80,8 +111,22 @@ class SelectMenuItemContent extends Component {
 	};
 
 	labelContent() {
-		const { label, tips } = this.props;
-		return <div className={`label ${tips ? 'hasTips' : ''}`}>{label}</div>;
+		const { label, tips, editable, edited } = this.props;
+		const { editInput } = this.state;
+
+		return <div className={`label ${(editable && edited) ? 'edited' : ''} ${tips ? 'hasTips' : ''}`}>
+			{!edited ?
+				label :
+				<input
+					type="text"
+					value={editInput}
+					autoFocus
+					onFocus={this.handleInputFocus}
+					onChange={this.handleInputChange}
+					onKeyUp={this.handleInputKeyUp}
+				/>
+			}
+		</div>;
 	};
 
 	controlIconContent() {
@@ -102,6 +147,36 @@ class SelectMenuItemContent extends Component {
 
 		return null;
 	};
+
+	handleInputFocus(e) {
+		const { label } = this.props;
+		const { editInput } = this.state;
+
+		e.target.value = '';
+		e.target.value = label;
+	}
+
+	handleInputChange(e) {
+		const { value } = e.target;
+		this.setState({ editInput: value });
+	}
+
+	handleInputKeyUp(e) {
+		const { itemKey } = this.props;
+		const { keyCode } = e;
+		const { editInput } = this.state;
+
+		switch (keyCode) {
+			case 13: // press enter
+				this.props.itemEdit(itemKey, false, editInput);
+				break;
+			case 27: // press escape
+				this.props.itemEdit(itemKey, false);
+				break;
+			default:
+				break;
+		}
+	}
 
   render() {
   	const { onClick, className } = this.props;

@@ -39,6 +39,15 @@ const menuItems = {
   	selected: false,
   	subMenu: 1,
   },
+  6: {
+  	itemKey: 6,
+  	label: 'smiley',
+  	disabled: true,
+  	selectable: true,
+  	selected: false,
+  	editable: true,
+  	edited: false,
+  }
 };
 
 const initialState = {
@@ -47,7 +56,7 @@ const initialState = {
 		meta: {
 			addable: false,
 		},
-		items: [1, 2],
+		items: [1, 2, 6],
 	}, {
 		meta: {
 			addable: false,

@@ -33,10 +33,13 @@ const menuItems = (state, action) => {
 			};
 		}
 		case ITEM_EDIT: {
-			const itemKey = action.payload.itemKey;
+			const { itemKey, edited, value } = action.payload;
 			const item = state[itemKey];
 
-			if (item.editable) item.edited = !item.edited;
+			if (item.editable) {
+				item.edited = edited;
+				if (value) item.label = value;
+			}
 
 			return {
 				...state,
@@ -62,6 +65,11 @@ const reducers = (state = initialState, action) => {
 			return {
 				...state,
 				main: menu(layer, action),
+			};
+		case ITEM_EDIT:
+			return {
+				...state,
+				menuItems: menuItems(state.menuItems, action),
 			};
 		default:
 			return state;

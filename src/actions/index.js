@@ -17,9 +17,11 @@ export const itemDelete = (itemKey, layer = 'main') => ({
 	},
 });
 
-export const itemEdit = (itemKey) => ({
+export const itemEdit = (itemKey, edited, value) => ({
 	type: ITEM_EDIT,
 	payload: {
 		itemKey,
+		edited,
+		value,
 	},
 });
