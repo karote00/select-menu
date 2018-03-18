@@ -100,6 +100,7 @@ class SelectMenuItemContent extends Component {
 
 		this.handleInputFocus = this.handleInputFocus.bind(this);
 		this.handleInputChange = this.handleInputChange.bind(this);
+		this.handleInputKeyDown = this.handleInputKeyDown.bind(this);
 		this.handleInputKeyUp = this.handleInputKeyUp.bind(this);
 	}
 
@@ -123,6 +124,7 @@ class SelectMenuItemContent extends Component {
 					autoFocus
 					onFocus={this.handleInputFocus}
 					onChange={this.handleInputChange}
+					onKeyDown={this.handleInputKeyDown}
 					onKeyUp={this.handleInputKeyUp}
 				/>
 			}
@@ -154,11 +156,20 @@ class SelectMenuItemContent extends Component {
 
 		e.target.value = '';
 		e.target.value = label;
+		e.target.select();
 	}
 
 	handleInputChange(e) {
 		const { value } = e.target;
 		this.setState({ editInput: value });
+	}
+
+	handleInputKeyDown(e) {
+		const { keyCode } = e;
+
+		if (keyCode === 8) { // press backspace
+			e.preventDefault();
+		}
 	}
 
 	handleInputKeyUp(e) {
@@ -167,6 +178,10 @@ class SelectMenuItemContent extends Component {
 		const { editInput } = this.state;
 
 		switch (keyCode) {
+			case 8: // press backspace
+				const v = e.target.value;
+				e.target.value = v.substr(0, v.length - 1);
+				break;
 			case 13: // press enter
 				this.props.itemEdit(itemKey, false, editInput);
 				break;
