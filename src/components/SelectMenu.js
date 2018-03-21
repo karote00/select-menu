@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import SelectMenuItem from './SelectMenuItem';
 
 const propTypes = {
-  layer: PropTypes.string.isRequired,
+  layer: PropTypes.number.isRequired,
 };
 
 const defaultProps = {

@@ -1,17 +1,29 @@
-import { ITEM_SELECTED, ITEM_DELETE, ITEM_EDIT } from '../actions';
+import {
+	ITEM_SELECTED,
+	ITEM_DELETE,
+	ITEM_EDIT,
+	ITEM_FOCUS,
+} from '../actions';
 
-const menu = (state, action) => {
+const menus = (state, action) => {
 	switch (action.type) {
-		case ITEM_DELETE:
-			const menu = state.map(g => {
+		case ITEM_DELETE: {
+			const { itemKey, menuIdx } = action.payload;
+
+			state[menuIdx].map(g => {
 				const idx = g.items.indexOf(action.payload.itemKey);
+
 				if (idx > -1) {
 					g.items.splice(idx, 1);
 				}
 				return g;
-			})
+			});
 
 			return state;
+		}
+		case ITEM_FOCUS: {
+			return state;
+		}
 		default:
 			return state;
 	}
@@ -59,17 +71,19 @@ const reducers = (state = initialState, action) => {
 				menuItems: menuItems(state.menuItems, action),
 			};
 		case ITEM_DELETE:
-			const layerIdx = action.payload.layer;
-			const layer = layerIdx === 'main' ? state.main : state.sub[layerIdx];
-
 			return {
 				...state,
-				main: menu(layer, action),
+				main: menus(state.menus, action)[0],
 			};
 		case ITEM_EDIT:
 			return {
 				...state,
 				menuItems: menuItems(state.menuItems, action),
+			};
+		case ITEM_FOCUS:
+			return {
+				...state,
+				menus: menus(state.menus, action),
 			};
 		default:
 			return state;

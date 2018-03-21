@@ -19,4 +19,15 @@ storiesOf('Button', module)
 
 
 storiesOf('Select Menu Item', module)
-	.add('Select Button', () => <Provider store={store}><SelectMenuWrapper /></Provider>);
+	.add('Select Button', () =>
+		<Provider store={store}>
+			<div>
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<SelectMenuWrapper />
+			</div>
+		</Provider>
+	);

@@ -1,6 +1,7 @@
 export const ITEM_SELECTED = 'ITEM_SELECTED';
 export const ITEM_DELETE = 'ITEM_DELETE';
 export const ITEM_EDIT = 'ITEM_EDIT';
+export const ITEM_FOCUS = 'ITEM_FOCUS';
 
 export const itemSelected = (itemKey) => ({
 	type: ITEM_SELECTED,
@@ -9,11 +10,11 @@ export const itemSelected = (itemKey) => ({
 	},
 });
 
-export const itemDelete = (itemKey, layer = 'main') => ({
+export const itemDelete = (itemKey, menuIdx) => ({
 	type: ITEM_DELETE,
 	payload: {
 		itemKey,
-		layer,
+		menuIdx,
 	},
 });
 
@@ -23,5 +24,13 @@ export const itemEdit = (itemKey, edited, value) => ({
 		itemKey,
 		edited,
 		value,
+	},
+});
+
+export const itemFocus = (itemKey, menuIdx) => ({
+	type: ITEM_FOCUS,
+	payload: {
+		itemKey,
+		menuIdx,
 	},
 });

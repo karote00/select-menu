@@ -72,7 +72,7 @@ class SelectMenuWrapper extends Component {
           label={menuData.buttonLabel}
         />
         <SelectMenu
-          layer="main"
+          layer={0}
           isOpen={selectMenuIsOpen}
           menu={menu}
         />

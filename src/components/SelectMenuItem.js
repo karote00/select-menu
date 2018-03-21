@@ -6,7 +6,12 @@ import { connect } from 'react-redux';
 
 import SelectMenuItemContent from './SelectMenuItemContent';
 
-import { itemSelected, itemDelete, itemEdit } from '../actions';
+import {
+	itemSelected,
+	itemDelete,
+	itemEdit,
+	itemFocus,
+} from '../actions';
 import { isFA, FAIcon } from '../utils/Icon';
 
 const propTypes = {
@@ -25,6 +30,7 @@ const propTypes = {
 	itemSelected: PropTypes.func.isRequired,
 	itemDelete: PropTypes.func.isRequired,
 	itemEdit: PropTypes.func.isRequired,
+	itemFocus: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -43,6 +49,7 @@ const defaultProps = {
 	itemSelected() {},
 	itemDelete() {},
 	itemEdit() {},
+	itemFocus() {},
 };
 
 const mapStateToProps = (state) => ({
@@ -53,6 +60,7 @@ const mapDispatchToProps = {
 	itemSelected,
 	itemDelete,
 	itemEdit,
+	itemFocus,
 };
 
 const SelectMenuItemWrapper = styled.div`

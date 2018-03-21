@@ -2,6 +2,26 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import rootReducer from '../reducers';
 import thunk from 'redux-thunk';
 
+const menus = {
+	0: [{
+		meta: {
+			addable: false,
+		},
+		items: [1, 2, 6],
+	}, {
+		meta: {
+			addable: false,
+		},
+		items: [3, 4, 5],
+	}],
+	1: [{
+		meta: {
+			addable: false,
+		},
+		items: [2, 5],
+	}],
+};
+
 const menuItems = {
 	1: {
 		itemKey: 1,
@@ -51,25 +71,10 @@ const menuItems = {
 
 const initialState = {
 	buttonLabel: 'Label',
-	main: [{
-		meta: {
-			addable: false,
-		},
-		items: [1, 2, 6],
-	}, {
-		meta: {
-			addable: false,
-		},
-		items: [3, 4, 5],
-	}],
-  sub: {
-  	1: [{
-  		meta: {
-  			addable: false,
-  		},
-  		items: [2, 5],
-  	}],
-  },
+	focusItem: null,
+	focusMenu: null,
+	main: menus[0],
+  menus,
   menuItems,
 };
 // const initialState = {};
