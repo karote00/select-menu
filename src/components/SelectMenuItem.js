@@ -201,7 +201,7 @@ class SelectMenuItem extends Component {
     if (disabled) return false;
 
     if (subMenuIdx > 0) {
-    	const subMenuIsOpen = menuData.layerOpens.indexOf(subMenuIdx) > -1;
+    	const subMenuIsOpen = menuData.layersOpen.indexOf(subMenuIdx) > -1;
     	this.props.openMenu(subMenuIdx, !subMenuIsOpen);
     } else if (!editable || (editable && !edited)) {
     	this.props.itemSelected(itemKey);
@@ -269,12 +269,12 @@ class SelectMenuItem extends Component {
   	let subMenuData = [];
 
   	if (subMenuIdx > 0) {
-  		const { menus, menuItems, layerOpens } = menuData;
+  		const { menus, menuItems, layersOpen } = menuData;
   		subMenuData = menus[subMenuIdx].list.map(m => ({
 	      ...m,
 	      items: m.items.map(it => menuItems[it])
 	    }));
-	    const isOpen = layerOpens.indexOf(subMenuIdx) > -1;
+	    const isOpen = layersOpen.indexOf(subMenuIdx) > -1;
 
   		subMenuContent = (<SelectMenu
   			layerIdx={layerIdx + 1}

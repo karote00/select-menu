@@ -101,12 +101,12 @@ const menuItems = {
 
 const initialState = {
 	buttonLabel: 'Label',
-	focusItem: null,
-	focusMenu: null,
+	focusItemIdx: null,
+	focusMenuIdx: null,
 	main: menus[0],
   menus,
   menuItems,
-  layerOpens: [],
+  layersOpen: [],
 };
 // const initialState = {};
 

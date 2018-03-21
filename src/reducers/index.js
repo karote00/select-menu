@@ -103,30 +103,30 @@ const reducers = (state = initialState, action) => {
 			return {
 				...state,
 				menuItems: menuItems(state.menuItems, action),
-				focusItem: action.payload.itemKey,
-				focusMenu: action.payload.menuIdx,
+				focusItemIdx: action.payload.itemKey,
+				focusMenuIdx: action.payload.menuIdx,
 			};
 		case ITEM_UNFOCUS:
 			return {
 				...state,
 				menuItems: menuItems(state.menuItems, action),
-				focusItem: null,
-				focusMenu: null,
+				focusItemIdx: null,
+				focusMenuIdx: null,
 			};
 		case OPEN_MENU: {
-			const { layerOpens } = state;
+			const { layersOpen } = state;
 			const { menuIdx, isOpen } = action.payload;
-			const layerIdx = layerOpens.indexOf(menuIdx);
+			const layerIdx = layersOpen.indexOf(menuIdx);
 
 			if (isOpen) {
-				if (layerIdx === -1) layerOpens.push(menuIdx);
+				if (layerIdx === -1) layersOpen.push(menuIdx);
 			} else {
-				if (layerIdx > -1) layerOpens.splice(layerIdx, layerOpens.length - layerIdx);
+				if (layerIdx > -1) layersOpen.splice(layerIdx, layersOpen.length - layerIdx);
 			}
 
 			return {
 				...state,
-				layerOpens,
+				layersOpen,
 			};
 		}
 		default:

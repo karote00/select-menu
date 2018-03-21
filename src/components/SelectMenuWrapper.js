@@ -6,14 +6,26 @@ import { connect } from 'react-redux';
 import SelectMenuButton from './SelectMenuButton';
 import SelectMenu from './SelectMenu';
 
+import { itemSelected, openMenu } from '../actions';
+
 import '../css/SelectMenu.css';
 
 const propTypes = {
+  // Props
   layer: PropTypes.number,
+
+  // Actions
+  itemSelected: PropTypes.func.isRequired,
+  openMenu: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
+  // Props
   layer: 0,
+
+  // Actions
+  itemSelected() {},
+  openMenu() {},
 };
 
 const mapStateToProps = (state) => ({
@@ -21,6 +33,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
+  itemSelected,
+  openMenu,
 };
 
 const Wrapper = styled.div`
@@ -34,29 +48,91 @@ const Wrapper = styled.div`
 `;
 
 class SelectMenuWrapper extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleKeyUp = this.handleKeyUp.bind(this);
+  }
+
+  componentDidMount() {
+    this.mainMenu.addEventListener('keyup', this.handleKeyUp);
+  }
+
+  handleKeyUp(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const { layer, menuData } = this.props;
+    const { layersOpen, menus, menuItems, focusItemIdx } = menuData;
+    const mainMenuIsOpen = layersOpen.indexOf(layer) > -1;
+
+    if (mainMenuIsOpen) {
+      const { keyCode } = e;
+      const focusItem = menuItems[focusItemIdx];
+      const subMenuIsOpen = focusItem && layersOpen.indexOf(focusItem.subMenuIdx) > -1;
+
+      switch (keyCode) {
+        case 13: // Enter
+          if (!focusItem.disabled) {
+            if (focusItem.subMenuIdx > 0) {
+              this.props.openMenu(focusItem.subMenuIdx, !subMenuIsOpen);
+            } else if (focusItem.selectable) {
+              this.props.itemSelected(focusItemIdx);
+            }
+          }
+          break;
+        case 37: // Left
+          break;
+        case 38: // Top
+          break;
+        case 39: // Right
+          if (!focusItem) {
+
+          } else {
+            this.props.openMenu(focusItem.subMenuIdx, true);
+          }
+          break;
+        case 40: // Down
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  // componentWillReceiveProps(nextProps) {
+  //   const { menuData } = nextProps;
+
+  //   if (this.main)
+  //   const mainIsOpen =
+  //   console.warn(nextProps)
+  //   // if ()
+  // }
+
   render() {
     const { menuData, layer } = this.props;
-    const { main, menuItems, layerOpens } = menuData;
+    const { main, menuItems, layersOpen } = menuData;
 
     const menu = main.list.map(m => ({
       ...m,
       items: m.items.map(it => menuItems[it])
     }));
-    const isOpen = layerOpens.indexOf(layer) > -1;
+    const isOpen = layersOpen.indexOf(layer) > -1;
 
     return (
-      <Wrapper tabIndex="-1">
-        <SelectMenuButton
-          label={menuData.buttonLabel}
-          isOpen={isOpen}
-        />
-        <SelectMenu
-          layerIdx={layer}
-          layer={layer}
-          menu={menu}
-          isOpen={isOpen}
-        />
-      </Wrapper>
+      <div tabIndex="-1" ref={(mainMenu) => { this.mainMenu = mainMenu; }}>
+        <Wrapper>
+          <SelectMenuButton
+            label={menuData.buttonLabel}
+            isOpen={isOpen}
+          />
+          <SelectMenu
+            layerIdx={layer}
+            layer={layer}
+            menu={menu}
+            isOpen={isOpen}
+          />
+        </Wrapper>
+      </div>
     );
   }
 }
