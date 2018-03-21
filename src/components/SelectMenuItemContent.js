@@ -17,6 +17,8 @@ const propTypes = {
 	selectable: PropTypes.bool,
 	selected: PropTypes.bool,
 	editable: PropTypes.bool,
+	edited: PropTypes.bool,
+	disabled: PropTypes.bool,
 
 	// Event
 	onClick: PropTypes.func,
@@ -24,10 +26,19 @@ const propTypes = {
 };
 
 const defaultProps = {
+	// Props
 	icon: '',
 	label: '',
 	controlIcon: '',
 	hasIcon: false,
+	tips: [],
+	selectable: false,
+	selected: false,
+	editable: false,
+	edited: false,
+	disabled: false,
+
+	// Event
 	onClick() {},
 };
 
@@ -194,10 +205,13 @@ class SelectMenuItemContent extends Component {
 	}
 
   render() {
-  	const { onClick, className } = this.props;
+  	const { onClick, className, disabled } = this.props;
 
     return (
-    	<SelectMenuItemContentWrapper onClick={onClick} className={className}>
+    	<SelectMenuItemContentWrapper
+    		onClick={onClick}
+    		className={className}
+    	>
     		{this.checkContent()}
       	{this.iconContent()}
       	{this.labelContent()}

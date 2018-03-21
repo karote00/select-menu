@@ -19,6 +19,7 @@ const propTypes = {
 	selectable: PropTypes.bool,
 	selected: PropTypes.bool,
 	editable: PropTypes.bool,
+	disabled: PropTypes.bool,
 
 	// Actions
 	itemSelected: PropTypes.func.isRequired,
@@ -27,10 +28,21 @@ const propTypes = {
 };
 
 const defaultProps = {
+	// Props
 	icon: '',
 	label: '',
 	controlIcon: '',
 	hasIcon: false,
+	tips: [],
+	selectable: false,
+	selected: false,
+	editable: false,
+	disabled: false,
+
+	// Actions
+	itemSelected() {},
+	itemDelete() {},
+	itemEdit() {},
 };
 
 const mapStateToProps = (state) => ({
@@ -75,7 +87,7 @@ const SelectMenuItemWrapper = styled.div`
 		}
 	}
 
-	&:hover {
+	&:hover:not(.disabled) {
 		background: rgba(0, 0, 0, .05);
 
 		.edit_content.has_hover {
@@ -93,6 +105,11 @@ const SelectMenuItemWrapper = styled.div`
 				}
 			}
 		}
+	}
+
+	&.disabled {
+		color: rgba(0, 0, 0, .3);
+		cursor: not-allowed;
 	}
 `;
 
@@ -155,7 +172,9 @@ class SelectMenuItem extends Component {
 	}
 
 	onItemChange(e) {
-    const { itemKey, editable, edited } = this.props;
+    const { itemKey, editable, edited, disabled } = this.props;
+    if (disabled) return false;
+
     if (!editable || (editable && !edited)) {
     	this.props.itemSelected(itemKey);
     }
@@ -212,10 +231,13 @@ class SelectMenuItem extends Component {
 	}
 
   render() {
+  	const { disabled } = this.props;
+
     return (
       <SelectMenuItemWrapper
     		onMouseEnter={this.handleSelectMenuItemMouseHover}
     		onMouseLeave={this.handleSelectMenuItemMouseLeave}
+    		className={`${disabled ? 'disabled' : ''}`}
       >
       	<SelectMenuItemContent onClick={this.onItemChange} {...this.props} />
     		{this.editContent()}

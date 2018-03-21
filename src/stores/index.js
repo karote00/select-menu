@@ -13,7 +13,6 @@ const menuItems = {
   2: {
   	itemKey: 2,
   	label: 'smiley',
-  	disabled: true,
   	selectable: true,
   	selected: false,
   	editable: true,
