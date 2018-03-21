@@ -4,6 +4,7 @@ import {
 	ITEM_EDIT,
 	ITEM_FOCUS,
 	ITEM_UNFOCUS,
+	OPEN_MENU,
 } from '../actions';
 
 const menus = (state, action) => {
@@ -21,6 +22,17 @@ const menus = (state, action) => {
 			});
 
 			return state;
+		}
+		case OPEN_MENU: {
+			const { menuIdx, isOpen } = action.payload;
+			const menu = state[menuIdx];
+
+			menu.isOpen = isOpen;
+
+			return {
+				...state,
+				[menuIdx]: menu,
+			};
 		}
 		default:
 			return state;
@@ -112,6 +124,15 @@ const reducers = (state = initialState, action) => {
 				focusItem: null,
 				focusMenu: null,
 			};
+		case OPEN_MENU: {
+			const menuList = menus(state.menus, action);
+
+			return {
+				...state,
+				main: menuList[0],
+				menus: menuList,
+			};
+		}
 		default:
 			return state;
 	}

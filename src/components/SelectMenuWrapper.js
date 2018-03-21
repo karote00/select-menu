@@ -34,18 +34,21 @@ class SelectMenuWrapper extends Component {
   render() {
     const { menuData } = this.props;
 
-    const menu = menuData.main.map(m => ({
+    const menu = menuData.main.list.map(m => ({
       ...m,
       items: m.items.map(it => menuData.menuItems[it])
     }));
+
     return (
       <Wrapper>
         <SelectMenuButton
           label={menuData.buttonLabel}
+          isOpen={menuData.main.isOpen}
         />
         <SelectMenu
           layer={0}
           menu={menu}
+          isOpen={menuData.main.isOpen}
         />
       </Wrapper>
     );

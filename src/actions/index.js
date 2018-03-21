@@ -3,6 +3,7 @@ export const ITEM_DELETE = 'ITEM_DELETE';
 export const ITEM_EDIT = 'ITEM_EDIT';
 export const ITEM_FOCUS = 'ITEM_FOCUS';
 export const ITEM_UNFOCUS = 'ITEM_UNFOCUS';
+export const OPEN_MENU = 'OPEN_MENU';
 
 export const itemSelected = (itemKey) => ({
 	type: ITEM_SELECTED,
@@ -41,5 +42,13 @@ export const itemUnfocus = (itemKey, menuIdx) => ({
 	payload: {
 		itemKey,
 		menuIdx,
+	},
+});
+
+export const openMenu = (menuIdx, isOpen) => ({
+	type: OPEN_MENU,
+	payload: {
+		menuIdx,
+		isOpen,
 	},
 });

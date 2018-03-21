@@ -143,7 +143,11 @@ class SelectMenuItemContent extends Component {
 	};
 
 	controlIconContent() {
-		const { controlIcon } = this.props;
+		const { controlIcon, subMenuIdx } = this.props;
+
+		if (subMenuIdx > 0) {
+			return <div className="fl-r">{FAIcon('fa-caret-right')}</div>;
+		}
 		return isFA(controlIcon) ? <div className="fl-r">{FAIcon(controlIcon)}</div> : null;
 	};
 

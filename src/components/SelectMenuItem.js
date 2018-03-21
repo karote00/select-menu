@@ -13,6 +13,7 @@ import {
 	itemEdit,
 	itemFocus,
 	itemUnfocus,
+	openMenu,
 } from '../actions';
 import { isFA, FAIcon } from '../utils/Icon';
 
@@ -37,6 +38,7 @@ const propTypes = {
 	itemEdit: PropTypes.func.isRequired,
 	itemFocus: PropTypes.func.isRequired,
 	itemUnfocus: PropTypes.func.isRequired,
+	openMenu: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -60,6 +62,7 @@ const defaultProps = {
 	itemEdit() {},
 	itemFocus() {},
 	itemUnfocus() {},
+	openMenu() {},
 };
 
 const mapStateToProps = (state) => ({
@@ -72,6 +75,7 @@ const mapDispatchToProps = {
 	itemEdit,
 	itemFocus,
 	itemUnfocus,
+	openMenu,
 };
 
 const SelectMenuItemWrapper = styled.div`
@@ -191,10 +195,13 @@ class SelectMenuItem extends Component {
 	}
 
 	onItemChange(e) {
-    const { itemKey, editable, edited, disabled } = this.props;
+    const { itemKey, editable, edited, disabled, subMenuIdx, menuData } = this.props;
     if (disabled) return false;
 
-    if (!editable || (editable && !edited)) {
+    if (subMenuIdx > 0) {
+    	const subMenu = menuData.menus[subMenuIdx];
+    	this.props.openMenu(subMenuIdx, !subMenu.isOpen);
+    } else if (!editable || (editable && !edited)) {
     	this.props.itemSelected(itemKey);
     }
   }
@@ -261,7 +268,7 @@ class SelectMenuItem extends Component {
 
   	if (subMenuIdx > 0) {
   		const { menus, menuItems } = menuData;
-  		subMenuData = menus[subMenuIdx].map(m => ({
+  		subMenuData = menus[subMenuIdx].list.map(m => ({
 	      ...m,
 	      items: m.items.map(it => menuItems[it])
 	    }));
@@ -269,6 +276,7 @@ class SelectMenuItem extends Component {
   		subMenuContent = (<SelectMenu
         layer={subLayer}
         menu={subMenuData}
+        isOpen={menus[subMenuIdx].isOpen}
       />);
   	}
 

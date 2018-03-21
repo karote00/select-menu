@@ -7,12 +7,17 @@ import SelectMenuItem from './SelectMenuItem';
 const propTypes = {
   // Props
   layer: PropTypes.number.isRequired,
+  isOpen: PropTypes.bool.isRequired,
 };
 
 const defaultProps = {
+  // Props
+  layer: 0,
+  isOpen: false,
 };
 
 const SelectMenuContainer = styled.div`
+  display: ${props => props.isOpen ? 'block' : 'none'};
   background: #e5e5e5;
   border: 1px solid #a0a0a0;
 `;
@@ -27,7 +32,7 @@ const OptGroup = styled.div`
 
 class SelectMenu extends Component {
   render() {
-    const { menu, layer } = this.props;
+    const { menu, layer, focusMenu, isOpen } = this.props;
 
     const hasIcon = menu.filter(group => {
       return group.items.filter(item => item.icon && item.icon.indexOf('fa-') > -1).length > 0;
@@ -58,7 +63,7 @@ class SelectMenu extends Component {
     });
 
     return (
-      <SelectMenuContainer>
+      <SelectMenuContainer isOpen={isOpen}>
         {OptGroupContents}
       </SelectMenuContainer>
     );
