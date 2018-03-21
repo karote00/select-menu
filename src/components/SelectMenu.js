@@ -8,12 +8,14 @@ const propTypes = {
   // Props
   layer: PropTypes.number.isRequired,
   isOpen: PropTypes.bool.isRequired,
+  layerIdx: PropTypes.number,
 };
 
 const defaultProps = {
   // Props
   layer: 0,
   isOpen: false,
+  layerIdx: 0,
 };
 
 const SelectMenuContainer = styled.div`
@@ -32,7 +34,7 @@ const OptGroup = styled.div`
 
 class SelectMenu extends Component {
   render() {
-    const { menu, layer, focusMenu, isOpen } = this.props;
+    const { menu, layer, focusMenu, isOpen, layerIdx } = this.props;
 
     const hasIcon = menu.filter(group => {
       return group.items.filter(item => item.icon && item.icon.indexOf('fa-') > -1).length > 0;
@@ -44,6 +46,7 @@ class SelectMenu extends Component {
         <SelectMenuItem
           {...item}
           key={j}
+          layerIdx={layerIdx}
           layer={layer}
           hasIcon={hasIcon}
         />)

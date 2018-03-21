@@ -9,9 +9,11 @@ import SelectMenu from './SelectMenu';
 import '../css/SelectMenu.css';
 
 const propTypes = {
+  layer: PropTypes.number,
 };
 
 const defaultProps = {
+  layer: 0,
 };
 
 const mapStateToProps = (state) => ({
@@ -24,6 +26,7 @@ const mapDispatchToProps = {
 const Wrapper = styled.div`
   width: 250px;
   color: #727272;
+  outline: none;
 
   * {
     box-sizing: border-box;
@@ -32,23 +35,26 @@ const Wrapper = styled.div`
 
 class SelectMenuWrapper extends Component {
   render() {
-    const { menuData } = this.props;
+    const { menuData, layer } = this.props;
+    const { main, menuItems, layerOpens } = menuData;
 
-    const menu = menuData.main.list.map(m => ({
+    const menu = main.list.map(m => ({
       ...m,
-      items: m.items.map(it => menuData.menuItems[it])
+      items: m.items.map(it => menuItems[it])
     }));
+    const isOpen = layerOpens.indexOf(layer) > -1;
 
     return (
-      <Wrapper>
+      <Wrapper tabIndex="-1">
         <SelectMenuButton
           label={menuData.buttonLabel}
-          isOpen={menuData.main.isOpen}
+          isOpen={isOpen}
         />
         <SelectMenu
-          layer={0}
+          layerIdx={layer}
+          layer={layer}
           menu={menu}
-          isOpen={menuData.main.isOpen}
+          isOpen={isOpen}
         />
       </Wrapper>
     );

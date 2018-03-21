@@ -4,7 +4,6 @@ import thunk from 'redux-thunk';
 
 const menus = {
 	0: {
-		isOpen: false,
 		list: [{
 			meta: {
 				addable: false,
@@ -18,7 +17,6 @@ const menus = {
 		}],
 	},
 	1: {
-		isOpen: false,
 		list: [{
 			meta: {
 				addable: false,
@@ -108,6 +106,7 @@ const initialState = {
 	main: menus[0],
   menus,
   menuItems,
+  layerOpens: [],
 };
 // const initialState = {};
 

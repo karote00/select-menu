@@ -31,6 +31,7 @@ const propTypes = {
 	isFocus: PropTypes.bool,
 	subMenuIdx: PropTypes.number,
 	layer: PropTypes.number,
+	layerIdx: PropTypes.number,
 
 	// Actions
 	itemSelected: PropTypes.func.isRequired,
@@ -55,6 +56,7 @@ const defaultProps = {
 	isFocus: false,
 	subMenuIdx: 0,
 	layer: 0,
+	layerIdx: 0,
 
 	// Actions
 	itemSelected() {},
@@ -199,8 +201,8 @@ class SelectMenuItem extends Component {
     if (disabled) return false;
 
     if (subMenuIdx > 0) {
-    	const subMenu = menuData.menus[subMenuIdx];
-    	this.props.openMenu(subMenuIdx, !subMenu.isOpen);
+    	const subMenuIsOpen = menuData.layerOpens.indexOf(subMenuIdx) > -1;
+    	this.props.openMenu(subMenuIdx, !subMenuIsOpen);
     } else if (!editable || (editable && !edited)) {
     	this.props.itemSelected(itemKey);
     }
@@ -261,22 +263,24 @@ class SelectMenuItem extends Component {
 	}
 
   render() {
-  	const { disabled, isFocus, itemKey, layer, subMenuIdx, menuData } = this.props;
+  	const { disabled, isFocus, itemKey, layer, subMenuIdx, menuData, layerIdx } = this.props;
   	let subMenuContent = null;
   	let subLayer = subMenuIdx;
   	let subMenuData = [];
 
   	if (subMenuIdx > 0) {
-  		const { menus, menuItems } = menuData;
+  		const { menus, menuItems, layerOpens } = menuData;
   		subMenuData = menus[subMenuIdx].list.map(m => ({
 	      ...m,
 	      items: m.items.map(it => menuItems[it])
 	    }));
+	    const isOpen = layerOpens.indexOf(subMenuIdx) > -1;
 
   		subMenuContent = (<SelectMenu
+  			layerIdx={layerIdx + 1}
         layer={subLayer}
         menu={subMenuData}
-        isOpen={menus[subMenuIdx].isOpen}
+        isOpen={isOpen}
       />);
   	}
 

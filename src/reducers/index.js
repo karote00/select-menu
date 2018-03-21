@@ -23,17 +23,6 @@ const menus = (state, action) => {
 
 			return state;
 		}
-		case OPEN_MENU: {
-			const { menuIdx, isOpen } = action.payload;
-			const menu = state[menuIdx];
-
-			menu.isOpen = isOpen;
-
-			return {
-				...state,
-				[menuIdx]: menu,
-			};
-		}
 		default:
 			return state;
 	}
@@ -125,12 +114,19 @@ const reducers = (state = initialState, action) => {
 				focusMenu: null,
 			};
 		case OPEN_MENU: {
-			const menuList = menus(state.menus, action);
+			const { layerOpens } = state;
+			const { menuIdx, isOpen } = action.payload;
+			const layerIdx = layerOpens.indexOf(menuIdx);
+
+			if (isOpen) {
+				if (layerIdx === -1) layerOpens.push(menuIdx);
+			} else {
+				if (layerIdx > -1) layerOpens.splice(layerIdx, layerOpens.length - layerIdx);
+			}
 
 			return {
 				...state,
-				main: menuList[0],
-				menus: menuList,
+				layerOpens,
 			};
 		}
 		default:
