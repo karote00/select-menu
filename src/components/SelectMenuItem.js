@@ -102,32 +102,32 @@ const SelectMenuItemWrapper = styled.div`
 
 		> span {
 			padding: 0 4px;
-			color: rgba(0, 0, 0, .3);
+			color: #a0a0a0;
 		}
 	}
 
-	&:hover:not(.disabled) {
-		background: rgba(0, 0, 0, .05);
+	&.is_hover:not(.disabled) {
+		background: #d9d9d9;
 
-		.edit_content.has_hover {
+		> .edit_content.has_edit {
 			transform: translateX(calc(100% - 3.2em));
 
 			.icon span:hover {
-				color: rgba(0, 0, 0, .6);
+				color: #5c5c5c;
 			}
 
 			&.delete_clicked {
 				transform: translateX(calc(33.3% - 1.6em + 4px));
 
 				.delete span {
-					color: rgba(0, 0, 0, .6);
+					color: #5c5c5c;
 				}
 			}
 		}
 	}
 
 	&.disabled {
-		color: rgba(0, 0, 0, .3);
+		color: #a0a0a0;
 		cursor: not-allowed;
 	}
 `;
@@ -145,7 +145,7 @@ const EditableContent = styled.div`
 	span {
 		width: calc(1em + 8px);
 		padding: 0 4px;
-		color: rgba(0, 0, 0, .3);
+		color: #a0a0a0;
 	}
 
 	.delete_content {
@@ -164,7 +164,7 @@ const EditableContent = styled.div`
 				padding: 0 8px;
 
 				&:hover {
-					color: rgba(0, 0, 0, .6);
+					color: #5c5c5c;
 				}
 			}
 		}
@@ -205,7 +205,7 @@ class SelectMenuItem extends Component {
 
 		return editable &&
 			<EditableContent
-    		className={`edit_content ${(editable && edited) ? '' : 'has_hover'} ${deleteClicked ? 'delete_clicked' : ''}`}
+    		className={`edit_content ${(editable && edited) ? '' : 'has_edit'} ${deleteClicked ? 'delete_clicked' : ''}`}
     	>
 				<span key="1" className="icon edit" onClick={this.handleEditItem}>{FAIcon('fa-edit')}</span>
 				<span key="2" className="icon delete" onClick={this.handleDeleteClick}>{FAIcon('fa-trash')}</span>
@@ -276,7 +276,7 @@ class SelectMenuItem extends Component {
       <SelectMenuItemWrapper
     		onMouseEnter={this.handleSelectMenuItemMouseHover}
     		onMouseLeave={this.handleSelectMenuItemMouseLeave}
-    		className={`${disabled ? 'disabled' : ''}`}
+    		className={`${disabled ? 'disabled' : ''} ${isFocus ? 'is_hover' : ''}`}
       >
       	<SelectMenuItemContent onClick={this.onItemChange} {...this.props} />
     		{this.editContent()}

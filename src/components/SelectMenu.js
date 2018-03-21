@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import SelectMenuItem from './SelectMenuItem';
 
 const propTypes = {
+  // Props
   layer: PropTypes.number.isRequired,
 };
 
@@ -12,8 +13,8 @@ const defaultProps = {
 };
 
 const SelectMenuContainer = styled.div`
-  background: rgba(0, 0, 0, .1);
-  border: 1px solid rgba(0, 0, 0, .3);
+  background: #e5e5e5;
+  border: 1px solid #a0a0a0;
 `;
 
 const OptGroup = styled.div`

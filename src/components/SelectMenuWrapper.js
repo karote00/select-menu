@@ -23,7 +23,7 @@ const mapDispatchToProps = {
 
 const Wrapper = styled.div`
   width: 250px;
-  color: rgba(0, 0, 0, .5);
+  color: #727272;
 
   * {
     box-sizing: border-box;
@@ -38,7 +38,6 @@ class SelectMenuWrapper extends Component {
       ...m,
       items: m.items.map(it => menuData.menuItems[it])
     }));
-
     return (
       <Wrapper>
         <SelectMenuButton

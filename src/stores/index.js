@@ -18,7 +18,7 @@ const menus = {
 		meta: {
 			addable: false,
 		},
-		items: [2, 5],
+		items: [8, 7],
 	}],
 };
 
@@ -72,7 +72,27 @@ const menuItems = {
   	editable: true,
   	edited: false,
 		isFocus: false,
-  }
+  },
+  7: {
+  	itemKey: 7,
+  	label: 'Jesus',
+  	disabled: false,
+  	selectable: true,
+  	selected: false,
+  	editable: false,
+  	edited: false,
+		isFocus: false,
+  },
+  8: {
+  	itemKey: 8,
+  	label: 'God',
+  	disabled: false,
+  	selectable: true,
+  	selected: false,
+  	editable: true,
+  	edited: false,
+		isFocus: false,
+  },
 };
 
 const initialState = {

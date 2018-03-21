@@ -6,9 +6,9 @@ import SelectMenuItem from './SelectMenuItem';
 import SelectMenuItemContent from './SelectMenuItemContent';
 
 const SelectMenuItemButton = styled.div`
-  background: rgba(0, 0, 0, 0.1);
+  background: #e5e5e5;
   border-radius: 3px;
-  border: 2px solid rgba(0, 0, 0, 0.4);
+  border: 2px solid #999999;
   font-weight: bold;
 
   cursor: pointer;
