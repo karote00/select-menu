@@ -5,6 +5,7 @@ import FA from 'react-fontawesome';
 import { connect } from 'react-redux';
 
 import SelectMenuItemContent from './SelectMenuItemContent';
+import SelectMenu from './SelectMenu';
 
 import {
 	itemSelected,
@@ -279,6 +280,7 @@ class SelectMenuItem extends Component {
       >
       	<SelectMenuItemContent onClick={this.onItemChange} {...this.props} />
     		{this.editContent()}
+    		{subMenuContent}
       </SelectMenuItemWrapper>
     );
   }
