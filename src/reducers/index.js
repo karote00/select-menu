@@ -3,6 +3,7 @@ import {
 	ITEM_DELETE,
 	ITEM_EDIT,
 	ITEM_FOCUS,
+	ITEM_UNFOCUS,
 } from '../actions';
 
 const menus = (state, action) => {
@@ -19,9 +20,6 @@ const menus = (state, action) => {
 				return g;
 			});
 
-			return state;
-		}
-		case ITEM_FOCUS: {
 			return state;
 		}
 		default:
@@ -58,6 +56,22 @@ const menuItems = (state, action) => {
 				[itemKey]: item,
 			};
 		}
+		case ITEM_FOCUS: {
+			const { itemKey } = action.payload;
+			const item = state[itemKey];
+
+			item.isFocus = true;
+
+			return state;
+		}
+		case ITEM_UNFOCUS: {
+			const { itemKey } = action.payload;
+			const item = state[itemKey];
+
+			item.isFocus = false;
+
+			return state;
+		}
 		default:
 			return state;
 	}
@@ -70,11 +84,15 @@ const reducers = (state = initialState, action) => {
 				...state,
 				menuItems: menuItems(state.menuItems, action),
 			};
-		case ITEM_DELETE:
+		case ITEM_DELETE: {
+			const menuList = menus(state.menus, action);
+
 			return {
 				...state,
-				main: menus(state.menus, action)[0],
+				main: menuList[0],
+				menus: menuList,
 			};
+		}
 		case ITEM_EDIT:
 			return {
 				...state,
@@ -83,7 +101,16 @@ const reducers = (state = initialState, action) => {
 		case ITEM_FOCUS:
 			return {
 				...state,
-				menus: menus(state.menus, action),
+				menuItems: menuItems(state.menuItems, action),
+				focusItem: action.payload.itemKey,
+				focusMenu: action.payload.menuIdx,
+			};
+		case ITEM_UNFOCUS:
+			return {
+				...state,
+				menuItems: menuItems(state.menuItems, action),
+				focusItem: null,
+				focusMenu: null,
 			};
 		default:
 			return state;

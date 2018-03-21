@@ -29,6 +29,7 @@ const menuItems = {
 		tips: [100, 200, 'fa-mobile'],
 		selectable: true,
 		selected: false,
+		isFocus: false,
 	},
   2: {
   	itemKey: 2,
@@ -37,18 +38,22 @@ const menuItems = {
   	selected: false,
   	editable: true,
   	edited: false,
+		isFocus: false,
   },
   3: {
   	itemKey: 3,
   	icon: 'fa-stop',
   	label: 'park',
   	tips: [10, 20, 'fa-car'],
+		isFocus: false,
   },
   4: {
   	itemKey: 4,
   	icon: 'fa-play',
   	label: 'play',
   	tips: ['fa-mobile'],
+  	subMenuIdx: 1,
+		isFocus: false,
   },
   5: {
   	itemKey: 5,
@@ -56,7 +61,7 @@ const menuItems = {
   	editabled: true,
   	selectable: true,
   	selected: false,
-  	subMenu: 1,
+		isFocus: false,
   },
   6: {
   	itemKey: 6,
@@ -66,6 +71,7 @@ const menuItems = {
   	selected: false,
   	editable: true,
   	edited: false,
+		isFocus: false,
   }
 };
 

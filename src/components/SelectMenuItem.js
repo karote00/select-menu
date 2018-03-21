@@ -11,6 +11,7 @@ import {
 	itemDelete,
 	itemEdit,
 	itemFocus,
+	itemUnfocus,
 } from '../actions';
 import { isFA, FAIcon } from '../utils/Icon';
 
@@ -25,12 +26,16 @@ const propTypes = {
 	selected: PropTypes.bool,
 	editable: PropTypes.bool,
 	disabled: PropTypes.bool,
+	isFocus: PropTypes.bool,
+	subMenuIdx: PropTypes.number,
+	layer: PropTypes.number,
 
 	// Actions
 	itemSelected: PropTypes.func.isRequired,
 	itemDelete: PropTypes.func.isRequired,
 	itemEdit: PropTypes.func.isRequired,
 	itemFocus: PropTypes.func.isRequired,
+	itemUnfocus: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -44,12 +49,16 @@ const defaultProps = {
 	selected: false,
 	editable: false,
 	disabled: false,
+	isFocus: false,
+	subMenuIdx: 0,
+	layer: 0,
 
 	// Actions
 	itemSelected() {},
 	itemDelete() {},
 	itemEdit() {},
 	itemFocus() {},
+	itemUnfocus() {},
 };
 
 const mapStateToProps = (state) => ({
@@ -61,6 +70,7 @@ const mapDispatchToProps = {
 	itemDelete,
 	itemEdit,
 	itemFocus,
+	itemUnfocus,
 };
 
 const SelectMenuItemWrapper = styled.div`
@@ -231,15 +241,35 @@ class SelectMenuItem extends Component {
 	}
 
 	handleSelectMenuItemMouseHover() {
+		const { itemKey, layer } = this.props;
 		this.setState({ selectMenuItemHover: true });
+		this.props.itemFocus(itemKey, layer);
 	}
 
 	handleSelectMenuItemMouseLeave() {
+		const { itemKey, layer } = this.props;
 		this.cancelSelectMenuItemHover();
+		this.props.itemUnfocus(itemKey, layer);
 	}
 
   render() {
-  	const { disabled } = this.props;
+  	const { disabled, isFocus, itemKey, layer, subMenuIdx, menuData } = this.props;
+  	let subMenuContent = null;
+  	let subLayer = subMenuIdx;
+  	let subMenuData = [];
+
+  	if (subMenuIdx > 0) {
+  		const { menus, menuItems } = menuData;
+  		subMenuData = menus[subMenuIdx].map(m => ({
+	      ...m,
+	      items: m.items.map(it => menuItems[it])
+	    }));
+
+  		subMenuContent = (<SelectMenu
+        layer={subLayer}
+        menu={subMenuData}
+      />);
+  	}
 
     return (
       <SelectMenuItemWrapper
