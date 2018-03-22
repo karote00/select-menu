@@ -94,7 +94,7 @@ class SelectMenuWrapper extends Component {
           break;
         case 39: // Right
           if (!focusItem) {
-
+            this.props.moveFocus('RIGHT');
           } else {
             this.props.openMenu(focusItem.subMenuIdx, true);
           }

@@ -65,6 +65,13 @@ const menuItemMoveFocus = (state, action) => {
 					}
 					break;
 				}
+				case 'RIGHT': {
+					const firstMenuItemIdx = openMenuItemIdxs[0];
+					const topMenuItem = menuItems[firstMenuItemIdx];
+					topMenuItem.isFocus = true;
+					state.focusItemIdx = openMenuItemIdxs[firstMenuItemIdx];
+					break;
+				}
 				default:
 					break;
 			}
