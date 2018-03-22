@@ -40,6 +40,9 @@ const defaultProps = {
 
 	// Event
 	onClick() {},
+
+	// Actions
+	itemEdit() {},
 };
 
 const mapStateToProps = (state) => ({
@@ -61,6 +64,7 @@ const SelectMenuItemContentWrapper = styled.div`
 
 	.fl-r {
 		float: right;
+		text-align: right;
 	}
 
 	.label {
@@ -76,6 +80,17 @@ const SelectMenuItemContentWrapper = styled.div`
 
 		&.edited {
 			padding: 0;
+		}
+	}
+
+	.tips {
+		.icon {
+			width: calc(1.6em + 8px);
+		}
+
+		> span {
+			padding: 0 4px;
+			color: #a0a0a0;
 		}
 	}
 `;
