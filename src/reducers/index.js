@@ -32,16 +32,18 @@ const menuItemMoveFocus = (state, action) => {
 	switch (action.type) {
 		case MOVE_FOCUS: {
 			const { direction } = action.payload;
-			const { menus, layersOpen, menuItems, focusItemIdx, focusMenuIdx } = state;
+			const { menus, layersOpen, menuItems, focusMenuIdx, layersOpenFocusItem } = state;
+			const currentFocusMenuIdx = focusMenuIdx ? layersOpen.indexOf(focusMenuIdx) : layersOpen.length - 1;
+			const focusItemIdx = layersOpenFocusItem[currentFocusMenuIdx];
 			const openMenu = menus[layersOpen[layersOpen.length - 1]];
 			const openMenuItemIdxs = openMenu.reduce((sum, m) => sum.concat(m.items), []);
 			const focusItem = menuItems[focusItemIdx];
-			// console.warn(state)
-			// console.warn(openMenu)
-			// console.warn(openMenuItemIdxs)
-			// console.error(focusItemIdx)
+			const topMenuItemIdx = openMenuItemIdxs[0];
+			const topMenuItem = menuItems[topMenuItemIdx];
+			const lastMenuItemIdx = openMenuItemIdxs[openMenuItemIdxs.length - 1];
+			const lastMenuItem = menuItems[lastMenuItemIdx];
 			const focusIdx = openMenuItemIdxs.indexOf(focusItemIdx);
-			// console.error(focusIdx)
+
 			switch (direction) {
 				case 'UP': {
 					if (focusItem) {
@@ -56,20 +58,41 @@ const menuItemMoveFocus = (state, action) => {
 						}
 
 						preMenuItem.isFocus = true;
-						state.focusItemIdx = openMenuItemIdxs[preItemIdx];
+						layersOpenFocusItem[currentFocusMenuIdx] = openMenuItemIdxs[preItemIdx];
 					} else {
-						const lastMenuItemIdx = openMenuItemIdxs[openMenuItemIdxs.length - 1];
-						const topMenuItem = menuItems[lastMenuItemIdx];
+						lastMenuItem.isFocus = true;
+						layersOpenFocusItem.push(lastMenuItemIdx);
+					}
+					break;
+				}
+				case 'DOWN': {
+					if (focusItem) {
+						focusItem.isFocus = false;
+
+						let nextItemIdx = focusIdx + 1 > openMenuItemIdxs.length - 1 ? openMenuItemIdxs.length - 1 : focusIdx + 1;
+						let nextMenuItem = menuItems[openMenuItemIdxs[nextItemIdx]];
+
+						while (nextMenuItem.disabled) {
+							nextItemIdx = nextItemIdx + 1 > openMenuItemIdxs.length - 1 ? openMenuItemIdxs.length - 1 : nextItemIdx + 1;
+							nextMenuItem = menuItems[openMenuItemIdxs[nextItemIdx]];
+						}
+
+						nextMenuItem.isFocus = true;
+						layersOpenFocusItem[currentFocusMenuIdx] = openMenuItemIdxs[nextItemIdx];
+					} else {
 						topMenuItem.isFocus = true;
-						state.focusItemIdx = openMenuItemIdxs[lastMenuItemIdx];
+						layersOpenFocusItem.push(topMenuItemIdx);
 					}
 					break;
 				}
 				case 'RIGHT': {
-					const firstMenuItemIdx = openMenuItemIdxs[0];
-					const topMenuItem = menuItems[firstMenuItemIdx];
 					topMenuItem.isFocus = true;
-					state.focusItemIdx = openMenuItemIdxs[firstMenuItemIdx];
+					layersOpenFocusItem.push(topMenuItemIdx);
+					break;
+				}
+				case 'LEFT': {
+					topMenuItem.isFocus = true;
+					layersOpenFocusItem.push(topMenuItemIdx);
 					break;
 				}
 				default:
@@ -120,7 +143,10 @@ const menuItems = (state, action) => {
 
 			item.isFocus = true;
 
-			return state;
+			return {
+				...state,
+				[itemKey]: item,
+			};
 		}
 		default:
 			return state;
@@ -149,30 +175,53 @@ const reducers = (state = initialState, action) => {
 				menuItems: menuItems(state.menuItems, action),
 			};
 		case ITEM_FOCUS: {
-			const currentFocusItem = state.menuItems[state.focusItemIdx];
+			const { itemKey, menuIdx } = action.payload;
+
+			const layersOpenFocusItem = state.layersOpenFocusItem;
+			const currentFocusMenuIdx = state.layersOpen.indexOf(menuIdx);
+			const currentFocusItem = state.menuItems[state.layersOpenFocusItem[currentFocusMenuIdx]];
+
 			if (currentFocusItem) currentFocusItem.isFocus = false;
+
+			if (currentFocusMenuIdx) {
+				if (layersOpenFocusItem.indexOf(currentFocusMenuIdx) > -1) layersOpenFocusItem[currentFocusMenuIdx] = itemKey;
+				else layersOpenFocusItem.push(itemKey);
+			}
 
 			return {
 				...state,
 				menuItems: menuItems(state.menuItems, action),
-				focusItemIdx: action.payload.itemKey,
-				focusMenuIdx: action.payload.menuIdx,
+				focusMenuIdx: menuIdx,
+				layersOpenFocusItem,
 			};
 		}
 		case OPEN_MENU: {
-			const { layersOpen } = state;
+			const { menus, menuItems, layersOpen, layersOpenFocusItem } = state;
 			const { menuIdx, isOpen } = action.payload;
 			const layerIdx = layersOpen.indexOf(menuIdx);
+			let focusMenuIdx = -1;
 
 			if (isOpen) {
 				if (layerIdx === -1) layersOpen.push(menuIdx);
+				else layersOpen[layerIdx] = menuIdx;
+
+				focusMenuIdx = menuIdx;
 			} else {
-				if (layerIdx > -1) layersOpen.splice(layerIdx, layersOpen.length - layerIdx);
+				if (layerIdx > -1) {
+					const closeMenus = layersOpen.splice(layerIdx, layersOpen.length - layerIdx);
+					layersOpenFocusItem.splice(layerIdx, layersOpenFocusItem.length - layerIdx);
+
+					closeMenus.map(cm => menus[cm].map(m => m.items.map(itemIdx => menuItems[itemIdx].isFocus = false)));
+				}
+				focusMenuIdx = layersOpen[layersOpen.length - 1];
 			}
 
 			return {
 				...state,
 				layersOpen,
+				focusMenuIdx,
+				layersOpenFocusItem,
+				menus,
 			};
 		}
 		case MOVE_FOCUS:

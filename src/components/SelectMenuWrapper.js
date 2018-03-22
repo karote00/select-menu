@@ -69,11 +69,12 @@ class SelectMenuWrapper extends Component {
     e.stopPropagation();
 
     const { layer, menuData } = this.props;
-    const { layersOpen, menus, menuItems, focusItemIdx } = menuData;
+    const { layersOpen, menus, menuItems, focusMenuIdx, layersOpenFocusItem } = menuData;
     const mainMenuIsOpen = layersOpen.indexOf(layer) > -1;
 
     if (mainMenuIsOpen) {
       const { keyCode } = e;
+      const focusItemIdx = layersOpenFocusItem[focusMenuIdx];
       const focusItem = menuItems[focusItemIdx];
       const subMenuIsOpen = focusItem && layersOpen.indexOf(focusItem.subMenuIdx) > -1;
 
@@ -88,6 +89,11 @@ class SelectMenuWrapper extends Component {
           }
           break;
         case 37: // Left
+          if (!focusItem) {
+            this.props.moveFocus('LEFT');
+          } else {
+            if (layersOpen.length > 1) this.props.openMenu(layersOpen[layersOpen.length - 1], false);
+          }
           break;
         case 38: // Up
           this.props.moveFocus('UP');
@@ -96,10 +102,11 @@ class SelectMenuWrapper extends Component {
           if (!focusItem) {
             this.props.moveFocus('RIGHT');
           } else {
-            this.props.openMenu(focusItem.subMenuIdx, true);
+            if (focusItem.subMenuIdx) this.props.openMenu(focusItem.subMenuIdx, true);
           }
           break;
         case 40: // Down
+          this.props.moveFocus('DOWN');
           break;
         default:
           break;
@@ -109,7 +116,7 @@ class SelectMenuWrapper extends Component {
 
   render() {
     const { menuData, layer } = this.props;
-    const { main, menuItems, layersOpen } = menuData;
+    const { main, menuItems, layersOpen, layersOpenFocusItem } = menuData;
 
     const menu = main.map(m => ({
       ...m,

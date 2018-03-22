@@ -252,18 +252,12 @@ class SelectMenuItem extends Component {
 
 	handleSelectMenuItemMouseHover() {
 		const { itemKey, layer, disabled } = this.props;
-
-		if (disabled) return false;
-
 		this.setState({ selectMenuItemHover: true });
 		this.props.itemFocus(itemKey, layer);
 	}
 
 	handleSelectMenuItemMouseLeave() {
 		const { itemKey, layer, disabled } = this.props;
-
-		if (disabled) return false;
-
 		this.cancelSelectMenuItemHover();
 	}
 
