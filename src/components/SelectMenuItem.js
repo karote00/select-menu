@@ -97,17 +97,6 @@ const SelectMenuItemWrapper = styled.div`
 		text-align: center;
 	}
 
-	.tips {
-		.icon {
-			width: calc(1.6em + 8px);
-		}
-
-		> span {
-			padding: 0 4px;
-			color: #a0a0a0;
-		}
-	}
-
 	&.is_focus:not(.disabled) {
 		background: #d9d9d9;
 	}
@@ -285,15 +274,17 @@ class SelectMenuItem extends Component {
   	}
 
     return (
-      <SelectMenuItemWrapper
-    		onMouseEnter={this.handleSelectMenuItemMouseHover}
-    		onMouseLeave={this.handleSelectMenuItemMouseLeave}
-    		className={`${disabled ? 'disabled' : ''} ${selectMenuItemHover ? 'is_hover' : ''} ${isFocus ? 'is_focus' : ''}`}
-      >
-      	<SelectMenuItemContent onClick={this.onItemChange} {...this.props} />
-    		{this.editContent()}
+    	<div>
+	      <SelectMenuItemWrapper
+	    		onMouseEnter={this.handleSelectMenuItemMouseHover}
+	    		onMouseLeave={this.handleSelectMenuItemMouseLeave}
+	    		className={`${disabled ? 'disabled' : ''} ${selectMenuItemHover ? 'is_hover' : ''} ${isFocus ? 'is_focus' : ''}`}
+	      >
+	      	<SelectMenuItemContent onClick={this.onItemChange} {...this.props} />
+	    		{this.editContent()}
+	      </SelectMenuItemWrapper>
     		{subMenuContent}
-      </SelectMenuItemWrapper>
+     	</div>
     );
   }
 }
