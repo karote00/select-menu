@@ -12,7 +12,6 @@ import {
 	itemDelete,
 	itemEdit,
 	itemFocus,
-	itemUnfocus,
 	openMenu,
 } from '../actions';
 import { isFA, FAIcon } from '../utils/Icon';
@@ -38,7 +37,6 @@ const propTypes = {
 	itemDelete: PropTypes.func.isRequired,
 	itemEdit: PropTypes.func.isRequired,
 	itemFocus: PropTypes.func.isRequired,
-	itemUnfocus: PropTypes.func.isRequired,
 	openMenu: PropTypes.func.isRequired,
 };
 
@@ -63,7 +61,6 @@ const defaultProps = {
 	itemDelete() {},
 	itemEdit() {},
 	itemFocus() {},
-	itemUnfocus() {},
 	openMenu() {},
 };
 
@@ -76,7 +73,6 @@ const mapDispatchToProps = {
 	itemDelete,
 	itemEdit,
 	itemFocus,
-	itemUnfocus,
 	openMenu,
 };
 
@@ -110,6 +106,10 @@ const SelectMenuItemWrapper = styled.div`
 			padding: 0 4px;
 			color: #a0a0a0;
 		}
+	}
+
+	&.is_focus:not(.disabled) {
+		background: #d9d9d9;
 	}
 
 	&.is_hover:not(.disabled) {
@@ -251,26 +251,32 @@ class SelectMenuItem extends Component {
 	}
 
 	handleSelectMenuItemMouseHover() {
-		const { itemKey, layer } = this.props;
+		const { itemKey, layer, disabled } = this.props;
+
+		if (disabled) return false;
+
 		this.setState({ selectMenuItemHover: true });
 		this.props.itemFocus(itemKey, layer);
 	}
 
 	handleSelectMenuItemMouseLeave() {
-		const { itemKey, layer } = this.props;
+		const { itemKey, layer, disabled } = this.props;
+
+		if (disabled) return false;
+
 		this.cancelSelectMenuItemHover();
-		this.props.itemUnfocus(itemKey, layer);
 	}
 
   render() {
   	const { disabled, isFocus, itemKey, layer, subMenuIdx, menuData, layerIdx } = this.props;
+  	const { selectMenuItemHover } = this.state;
   	let subMenuContent = null;
   	let subLayer = subMenuIdx;
   	let subMenuData = [];
 
   	if (subMenuIdx > 0) {
   		const { menus, menuItems, layersOpen } = menuData;
-  		subMenuData = menus[subMenuIdx].list.map(m => ({
+  		subMenuData = menus[subMenuIdx].map(m => ({
 	      ...m,
 	      items: m.items.map(it => menuItems[it])
 	    }));
@@ -288,7 +294,7 @@ class SelectMenuItem extends Component {
       <SelectMenuItemWrapper
     		onMouseEnter={this.handleSelectMenuItemMouseHover}
     		onMouseLeave={this.handleSelectMenuItemMouseLeave}
-    		className={`${disabled ? 'disabled' : ''} ${isFocus ? 'is_hover' : ''}`}
+    		className={`${disabled ? 'disabled' : ''} ${selectMenuItemHover ? 'is_hover' : ''} ${isFocus ? 'is_focus' : ''}`}
       >
       	<SelectMenuItemContent onClick={this.onItemChange} {...this.props} />
     		{this.editContent()}

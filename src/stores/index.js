@@ -3,27 +3,23 @@ import rootReducer from '../reducers';
 import thunk from 'redux-thunk';
 
 const menus = {
-	0: {
-		list: [{
-			meta: {
-				addable: false,
-			},
-			items: [1, 2, 6],
-		}, {
-			meta: {
-				addable: false,
-			},
-			items: [3, 4, 5],
-		}],
-	},
-	1: {
-		list: [{
-			meta: {
-				addable: false,
-			},
-			items: [8, 7],
-		}],
-	},
+	0: [{
+		meta: {
+			addable: false,
+		},
+		items: [1, 2, 6],
+	}, {
+		meta: {
+			addable: false,
+		},
+		items: [3, 4, 5],
+	}],
+	1: [{
+		meta: {
+			addable: false,
+		},
+		items: [8, 7],
+	}],
 };
 
 const menuItems = {

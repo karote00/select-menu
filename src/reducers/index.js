@@ -3,8 +3,8 @@ import {
 	ITEM_DELETE,
 	ITEM_EDIT,
 	ITEM_FOCUS,
-	ITEM_UNFOCUS,
 	OPEN_MENU,
+	MOVE_FOCUS,
 } from '../actions';
 
 const menus = (state, action) => {
@@ -22,6 +22,56 @@ const menus = (state, action) => {
 			});
 
 			return state;
+		}
+		default:
+			return state;
+	}
+};
+
+const menuItemMoveFocus = (state, action) => {
+	switch (action.type) {
+		case MOVE_FOCUS: {
+			const { direction } = action.payload;
+			const { menus, layersOpen, menuItems, focusItemIdx, focusMenuIdx } = state;
+			const openMenu = menus[layersOpen[layersOpen.length - 1]];
+			const openMenuItemIdxs = openMenu.reduce((sum, m) => sum.concat(m.items), []);
+			const focusItem = menuItems[focusItemIdx];
+			// console.warn(state)
+			// console.warn(openMenu)
+			// console.warn(openMenuItemIdxs)
+			// console.error(focusItemIdx)
+			const focusIdx = openMenuItemIdxs.indexOf(focusItemIdx);
+			// console.error(focusIdx)
+			switch (direction) {
+				case 'UP': {
+					if (focusItem) {
+						focusItem.isFocus = false;
+
+						let preItemIdx = focusIdx - 1 < 0 ? 0 : focusIdx - 1;
+						let preMenuItem = menuItems[openMenuItemIdxs[preItemIdx]];
+
+						while (preMenuItem.disabled) {
+							preItemIdx = preItemIdx - 1 < 0 ? 0 : preItemIdx - 1;
+							preMenuItem = menuItems[openMenuItemIdxs[preItemIdx]];
+						}
+
+						preMenuItem.isFocus = true;
+						state.focusItemIdx = openMenuItemIdxs[preItemIdx];
+					} else {
+						const lastMenuItemIdx = openMenuItemIdxs[openMenuItemIdxs.length - 1];
+						const topMenuItem = menuItems[lastMenuItemIdx];
+						topMenuItem.isFocus = true;
+						state.focusItemIdx = openMenuItemIdxs[lastMenuItemIdx];
+					}
+					break;
+				}
+				default:
+					break;
+			}
+
+			return {
+				...state.menus,
+			};
 		}
 		default:
 			return state;
@@ -65,14 +115,6 @@ const menuItems = (state, action) => {
 
 			return state;
 		}
-		case ITEM_UNFOCUS: {
-			const { itemKey } = action.payload;
-			const item = state[itemKey];
-
-			item.isFocus = false;
-
-			return state;
-		}
 		default:
 			return state;
 	}
@@ -99,20 +141,17 @@ const reducers = (state = initialState, action) => {
 				...state,
 				menuItems: menuItems(state.menuItems, action),
 			};
-		case ITEM_FOCUS:
+		case ITEM_FOCUS: {
+			const currentFocusItem = state.menuItems[state.focusItemIdx];
+			if (currentFocusItem) currentFocusItem.isFocus = false;
+
 			return {
 				...state,
 				menuItems: menuItems(state.menuItems, action),
 				focusItemIdx: action.payload.itemKey,
 				focusMenuIdx: action.payload.menuIdx,
 			};
-		case ITEM_UNFOCUS:
-			return {
-				...state,
-				menuItems: menuItems(state.menuItems, action),
-				focusItemIdx: null,
-				focusMenuIdx: null,
-			};
+		}
 		case OPEN_MENU: {
 			const { layersOpen } = state;
 			const { menuIdx, isOpen } = action.payload;
@@ -129,6 +168,11 @@ const reducers = (state = initialState, action) => {
 				layersOpen,
 			};
 		}
+		case MOVE_FOCUS:
+			return {
+				...state,
+				menus: menuItemMoveFocus(state, action),
+			};
 		default:
 			return state;
 	}

@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import SelectMenuButton from './SelectMenuButton';
 import SelectMenu from './SelectMenu';
 
-import { itemSelected, openMenu } from '../actions';
+import { itemSelected, openMenu, moveFocus } from '../actions';
 
 import '../css/SelectMenu.css';
 
@@ -17,6 +17,7 @@ const propTypes = {
   // Actions
   itemSelected: PropTypes.func.isRequired,
   openMenu: PropTypes.func.isRequired,
+  moveFocus: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -26,6 +27,7 @@ const defaultProps = {
   // Actions
   itemSelected() {},
   openMenu() {},
+  moveFocus() {},
 };
 
 const mapStateToProps = (state) => ({
@@ -35,12 +37,16 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   itemSelected,
   openMenu,
+  moveFocus,
 };
 
 const Wrapper = styled.div`
   width: 250px;
   color: #727272;
-  outline: none;
+
+  > div {
+    outline: none;
+  }
 
   * {
     box-sizing: border-box;
@@ -83,7 +89,8 @@ class SelectMenuWrapper extends Component {
           break;
         case 37: // Left
           break;
-        case 38: // Top
+        case 38: // Up
+          this.props.moveFocus('UP');
           break;
         case 39: // Right
           if (!focusItem) {
@@ -99,28 +106,20 @@ class SelectMenuWrapper extends Component {
       }
     }
   }
-  // componentWillReceiveProps(nextProps) {
-  //   const { menuData } = nextProps;
-
-  //   if (this.main)
-  //   const mainIsOpen =
-  //   console.warn(nextProps)
-  //   // if ()
-  // }
 
   render() {
     const { menuData, layer } = this.props;
     const { main, menuItems, layersOpen } = menuData;
 
-    const menu = main.list.map(m => ({
+    const menu = main.map(m => ({
       ...m,
       items: m.items.map(it => menuItems[it])
     }));
     const isOpen = layersOpen.indexOf(layer) > -1;
 
     return (
-      <div tabIndex="-1" ref={(mainMenu) => { this.mainMenu = mainMenu; }}>
-        <Wrapper>
+      <Wrapper>
+        <div tabIndex="-1" ref={(mainMenu) => { this.mainMenu = mainMenu; }}>
           <SelectMenuButton
             label={menuData.buttonLabel}
             isOpen={isOpen}
@@ -131,8 +130,8 @@ class SelectMenuWrapper extends Component {
             menu={menu}
             isOpen={isOpen}
           />
-        </Wrapper>
-      </div>
+        </div>
+      </Wrapper>
     );
   }
 }
