@@ -183,10 +183,8 @@ const reducers = (state = initialState, action) => {
 
 			if (currentFocusItem) currentFocusItem.isFocus = false;
 
-			if (currentFocusMenuIdx) {
-				if (layersOpenFocusItem.indexOf(currentFocusMenuIdx) > -1) layersOpenFocusItem[currentFocusMenuIdx] = itemKey;
-				else layersOpenFocusItem.push(itemKey);
-			}
+			if (layersOpenFocusItem[currentFocusMenuIdx]) layersOpenFocusItem[currentFocusMenuIdx] = itemKey;
+			else layersOpenFocusItem.push(itemKey);
 
 			return {
 				...state,
@@ -211,7 +209,10 @@ const reducers = (state = initialState, action) => {
 					const closeMenus = layersOpen.splice(layerIdx, layersOpen.length - layerIdx);
 					layersOpenFocusItem.splice(layerIdx, layersOpenFocusItem.length - layerIdx);
 
-					closeMenus.map(cm => menus[cm].map(m => m.items.map(itemIdx => menuItems[itemIdx].isFocus = false)));
+					closeMenus.map(cm => menus[cm].map(m => m.items.map(itemIdx => {
+						menuItems[itemIdx].isFocus = false;
+						menuItems[itemIdx].selected = false;
+					})));
 				}
 				focusMenuIdx = layersOpen[layersOpen.length - 1];
 			}
