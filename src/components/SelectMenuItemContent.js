@@ -203,6 +203,9 @@ class SelectMenuItemContent extends Component {
 	}
 
 	handleInputKeyUp(e) {
+		e.preventDefault();
+		e.stopPropagation();
+
 		const { itemKey } = this.props;
 		const { keyCode } = e;
 		const { editInput } = this.state;
