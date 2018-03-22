@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
+import OutsideClickHandler from './OutsideClickHandler';
 import SelectMenuButton from './SelectMenuButton';
 import SelectMenu from './SelectMenu';
 
@@ -57,11 +58,22 @@ class SelectMenuWrapper extends Component {
   constructor(props) {
     super(props);
 
+    this.onOutsideClick = this.onOutsideClick.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
   }
 
   componentDidMount() {
     this.mainMenu.addEventListener('keyup', this.handleKeyUp);
+  }
+
+  onOutsideClick() {
+    const { menuData, layer } = this.props;
+    const { main, menuItems, layersOpen, layersOpenFocusItem } = menuData;
+    const isOpen = layersOpen.indexOf(layer) > -1;
+
+    if (!isOpen) return;
+
+    this.props.openMenu(layersOpen[0], false);
   }
 
   handleKeyUp(e) {
@@ -126,18 +138,20 @@ class SelectMenuWrapper extends Component {
 
     return (
       <Wrapper>
-        <div tabIndex="-1" ref={(mainMenu) => { this.mainMenu = mainMenu; }}>
-          <SelectMenuButton
-            label={menuData.buttonLabel}
-            isOpen={isOpen}
-          />
-          <SelectMenu
-            layerIdx={layer}
-            layer={layer}
-            menu={menu}
-            isOpen={isOpen}
-          />
-        </div>
+        <OutsideClickHandler onOutsideClick={this.onOutsideClick}>
+          <div tabIndex="-1" style={{ outline: 'none' }} ref={(mainMenu) => { this.mainMenu = mainMenu; }}>
+            <SelectMenuButton
+              label={menuData.buttonLabel}
+              isOpen={isOpen}
+            />
+            <SelectMenu
+              layerIdx={layer}
+              layer={layer}
+              menu={menu}
+              isOpen={isOpen}
+            />
+          </div>
+        </OutsideClickHandler>
       </Wrapper>
     );
   }
