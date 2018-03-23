@@ -37,7 +37,13 @@ class SelectMenu extends Component {
     const { menu, layer, isOpen, layerIdx } = this.props;
 
     const hasIcon = menu.filter(group => {
-      return group.items.filter(item => item.icon && item.icon.indexOf('fa-') > -1).length > 0;
+      return group.items.filter(item => {
+        if (
+          item.icon && item.icon.indexOf('fa-') > -1 ||
+          item.selectable === true
+        ) return true;
+        return false;
+      }).length > 0;
     }).length > 0;
 
     const OptGroupContents = menu.map((group, i) => {
