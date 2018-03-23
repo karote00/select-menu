@@ -27,7 +27,7 @@ storiesOf('Select Menu Item', module)
 				<br />
 				<br />
 				<br />
-				<SelectMenuWrapper />
+				<SelectMenuWrapper buttonAlignType="between" />
 			</div>
 		</Provider>
 	);

@@ -19,6 +19,7 @@ const propTypes = {
 	editable: PropTypes.bool,
 	edited: PropTypes.bool,
 	disabled: PropTypes.bool,
+	alignType: PropTypes.string,
 
 	// Event
 	onClick: PropTypes.func,
@@ -37,6 +38,7 @@ const defaultProps = {
 	editable: false,
 	edited: false,
 	disabled: false,
+	alignType: 'between',
 
 	// Event
 	onClick() {},
@@ -161,9 +163,9 @@ class SelectMenuItemContent extends Component {
 		const { controlIcon, subMenuIdx } = this.props;
 
 		if (subMenuIdx > 0) {
-			return <div className="fl-r">{FAIcon('fa-caret-right')}</div>;
+			return <div className="control-icon fl-r">{FAIcon('fa-caret-right')}</div>;
 		}
-		return isFA(controlIcon) ? <div className="fl-r">{FAIcon(controlIcon)}</div> : null;
+		return isFA(controlIcon) ? <div className=" control-icon fl-r">{FAIcon(controlIcon)}</div> : null;
 	};
 
 	tipsContent() {
@@ -174,7 +176,7 @@ class SelectMenuItemContent extends Component {
 	checkContent() {
 		const { selectable, selected } = this.props;
 		if (selectable) {
-			return <div className="icon">{FAIcon(selected ? 'fa-check' : '')}</div>;
+			return <div className="check icon">{FAIcon(selected ? 'fa-check' : '')}</div>;
 		}
 
 		return null;
@@ -227,12 +229,13 @@ class SelectMenuItemContent extends Component {
 	}
 
   render() {
-  	const { onClick, className, disabled } = this.props;
+  	const { onClick, className, disabled, alignType } = this.props;
 
     return (
     	<SelectMenuItemContentWrapper
     		onClick={onClick}
     		className={className}
+    		alignType={alignType}
     	>
     		{this.checkContent()}
       	{this.iconContent()}

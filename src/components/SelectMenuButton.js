@@ -12,6 +12,7 @@ import { openMenu } from '../actions';
 const propTypes = {
   // Props
   isOpen: PropTypes.bool.isRequired,
+  buttonAlignType: PropTypes.string,
 
   // Actions
   openMenu: PropTypes.func.isRequired,
@@ -20,6 +21,7 @@ const propTypes = {
 const defaultProps = {
   // Props
   isOpen: false,
+  buttonAlignType: 'between',
 
   // Actions
   openMenu() {},
@@ -41,19 +43,16 @@ const SelectMenuItemButton = styled.div`
   outline: none;
   cursor: pointer;
 
-  .select-button {
-    display: block;
-    overflow: hidden;
+  .select-button.between-align {
+    .control-icon {
+      margin-left: auto;
+    }
   }
 
   .grayed-out {
     .label {
      color: #a0a0a0;
     }
-  }
-
-  .label {
-    float: left;
   }
 `;
 
@@ -70,10 +69,16 @@ class SelectMenuButton extends Component {
   }
 
   render() {
-    const { label, menuData } = this.props;
+    const { label, menuData, buttonAlignType } = this.props;
     const { selectedItems } = menuData;
-
+    const btnOptions = {};
     // TODO: Change label with seletedItems
+
+    if (buttonAlignType === 'icon-align') {
+      btnOptions.icon = 'fa-angle-down';
+    } else {
+      btnOptions.controlIcon = 'fa-angle-down';
+    }
 
     return (
       <SelectMenuItemButton
@@ -82,9 +87,9 @@ class SelectMenuButton extends Component {
         onClick={this.handleOpenSeleceMenu}
       >
         <SelectMenuItemContent
-          className={`select-button ${selectedItems.length === 0 ? 'grayed-out' : ''}`}
+          className={`select-button ${selectedItems.length === 0 ? 'grayed-out' : ''} ${buttonAlignType === 'between' ? 'between-align' : ''}`}
           label={label}
-          controlIcon="fa-angle-down"
+          {...btnOptions}
         />
       </SelectMenuItemButton>
     );
