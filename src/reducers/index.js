@@ -7,7 +7,6 @@ import {
 	MOVE_FOCUS,
 	COMBINATION_KEY,
 } from '../actions';
-import numberConvert from '../utils/numberConvert';
 
 const menus = (state, action) => {
 	switch (action.type) {
