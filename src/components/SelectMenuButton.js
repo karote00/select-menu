@@ -46,6 +46,12 @@ const SelectMenuItemButton = styled.div`
     overflow: hidden;
   }
 
+  .grayed-out {
+    .label {
+     color: #a0a0a0;
+    }
+  }
+
   .label {
     float: left;
   }
@@ -75,7 +81,11 @@ class SelectMenuButton extends Component {
         tabIndex="-1"
         onClick={this.handleOpenSeleceMenu}
       >
-        <SelectMenuItemContent className="select-button" label={label} controlIcon="fa-angle-down"/>
+        <SelectMenuItemContent
+          className={`select-button ${selectedItems.length === 0 ? 'grayed-out' : ''}`}
+          label={label}
+          controlIcon="fa-angle-down"
+        />
       </SelectMenuItemButton>
     );
   }
