@@ -24,27 +24,19 @@ const SelectMenuContainer = styled.div`
   border: 1px solid #a0a0a0;
 `;
 
-const OptGroup = styled.div`
+const OptGroupLine = styled.div`
   border-top: 1px solid darkgray;
-
-  &:first-child {
-    border-top: none;
-  }
 `;
 
 class SelectMenu extends Component {
   render() {
     const { menu, layer, isOpen, layerIdx } = this.props;
 
-    const hasIcon = menu.filter(group => {
-      return group.items.filter(item => {
-        if (
-          item.icon && item.icon.indexOf('fa-') > -1 ||
-          item.selectable === true
-        ) return true;
-        return false;
-      }).length > 0;
-    }).length > 0;
+    const hasIcon = menu.filter(group =>
+      group.items.filter(item =>
+        item.icon && item.icon.indexOf('fa-') > -1 || item.selectable === true
+      ).length > 0
+    ).length > 0;
 
     const OptGroupContents = menu.map((group, i) => {
       const { meta, items } = group;
@@ -59,16 +51,17 @@ class SelectMenu extends Component {
       );
       const addItem = meta.addable ?
         <SelectMenuItem
+          key="999"
           icon="fa-plus"
         />
         : null;
+      const optGroupLine = i === 0 ? null : <OptGroupLine key="1000" />;
 
-      return (
-        <OptGroup key={i}>
-          {itemContents}
-          {addItem}
-        </OptGroup>
-      );
+      return [
+        optGroupLine,
+        itemContents,
+        addItem,
+      ];
     });
 
     return (
