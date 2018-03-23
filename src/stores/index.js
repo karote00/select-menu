@@ -103,6 +103,7 @@ const initialState = {
   menuItems,
   layersOpen: [],
   layersOpenFocusItem: [],
+  selectedItems: [],
   ctrlKey: false,
   metaKey: false,
 };

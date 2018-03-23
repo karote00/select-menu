@@ -156,11 +156,23 @@ const menuItems = (state, action) => {
 
 const reducers = (state = initialState, action) => {
 	switch (action.type) {
-		case ITEM_SELECTED:
+		case ITEM_SELECTED: {
+			const { itemKey } = action.payload;
+			const { selectedItems } = state;
+
+			const selectedItemIdx = selectedItems.indexOf(itemKey);
+			if (selectedItemIdx > -1) {
+				selectedItems.splice(selectedItemIdx, 1);
+			} else {
+				selectedItems.push(itemKey);
+			}
+
 			return {
 				...state,
+				selectedItems,
 				menuItems: menuItems(state.menuItems, action),
 			};
+		}
 		case ITEM_DELETE: {
 			const menuList = menus(state.menus, action);
 

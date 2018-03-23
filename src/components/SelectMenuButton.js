@@ -26,6 +26,7 @@ const defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
+  menuData: state,
 });
 
 const mapDispatchToProps = {
@@ -63,7 +64,10 @@ class SelectMenuButton extends Component {
   }
 
   render() {
-    const { label } = this.props;
+    const { label, menuData } = this.props;
+    const { selectedItems } = menuData;
+
+    // TODO: Change label with seletedItems
 
     return (
       <SelectMenuItemButton
