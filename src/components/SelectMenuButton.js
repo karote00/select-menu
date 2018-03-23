@@ -13,6 +13,9 @@ const propTypes = {
   // Props
   isOpen: PropTypes.bool.isRequired,
   buttonAlignType: PropTypes.string,
+  btnSimple: PropTypes.bool,
+  btnStyle: PropTypes.object,
+  btnDropdown: PropTypes.bool,
 
   // Actions
   openMenu: PropTypes.func.isRequired,
@@ -22,6 +25,9 @@ const defaultProps = {
   // Props
   isOpen: false,
   buttonAlignType: 'between',
+  btnSimple: false,
+  btnStyle: {},
+  btnDropdown: true,
 
   // Actions
   openMenu() {},
@@ -36,9 +42,8 @@ const mapDispatchToProps = {
 };
 
 const SelectMenuItemButton = styled.div`
-  background: #e5e5e5;
-  border-radius: 3px;
-  border: 2px solid #999999;
+  background: ${props => !props.btnSimple ? '#e5e5e5' : 'transparent'};
+  border: ${props => !props.btnSimple ? '2px solid #999999' : 'none'};
   font-weight: bold;
   outline: none;
   cursor: pointer;
@@ -69,15 +74,17 @@ class SelectMenuButton extends Component {
   }
 
   render() {
-    const { label, menuData, buttonAlignType } = this.props;
+    const { label, menuData, buttonAlignType, btnSimple, btnStyle, btnDropdown } = this.props;
     const { selectedItems } = menuData;
     const btnOptions = {};
     // TODO: Change label with seletedItems
 
-    if (buttonAlignType === 'icon-align') {
-      btnOptions.icon = 'fa-angle-down';
-    } else {
-      btnOptions.controlIcon = 'fa-angle-down';
+    if (!btnSimple || btnDropdown) {
+      if (buttonAlignType === 'icon-align') {
+        btnOptions.icon = 'fa-angle-down';
+      } else {
+        btnOptions.controlIcon = 'fa-angle-down';
+      }
     }
 
     return (
@@ -85,6 +92,8 @@ class SelectMenuButton extends Component {
         role="button"
         tabIndex="-1"
         onClick={this.handleOpenSeleceMenu}
+        btnSimple={btnSimple}
+        style={btnStyle}
       >
         <SelectMenuItemContent
           className={`select-button ${selectedItems.length === 0 ? 'grayed-out' : ''} ${buttonAlignType === 'between' ? 'between-align' : ''}`}

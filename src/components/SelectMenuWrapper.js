@@ -15,6 +15,9 @@ const propTypes = {
   // Props
   layer: PropTypes.number,
   buttonAlignType: PropTypes.string,
+  btnSimple: PropTypes.bool,
+  btnStyle: PropTypes.object,
+  btnDropdown: PropTypes.bool,
 
   // Actions
   itemSelected: PropTypes.func.isRequired,
@@ -27,6 +30,9 @@ const defaultProps = {
   // Props
   layer: 0,
   buttonAlignType: 'between',
+  btnSimple: false,
+  btnStyle: {},
+  btnDropdown: true,
 
   // Actions
   itemSelected() {},
@@ -147,7 +153,7 @@ class SelectMenuWrapper extends Component {
   }
 
   render() {
-    const { menuData, layer, buttonAlignType } = this.props;
+    const { menuData, layer, buttonAlignType, btnSimple, btnStyle, btnDropdown } = this.props;
     const { main, menuItems, layersOpen, layersOpenFocusItem } = menuData;
 
     const menu = main.map(m => ({
@@ -164,6 +170,9 @@ class SelectMenuWrapper extends Component {
               label={menuData.buttonLabel}
               isOpen={isOpen}
               buttonAlignType={buttonAlignType}
+              btnSimple={btnSimple}
+              btnStyle={btnStyle}
+              btnDropdown={btnDropdown}
             />
             <SelectMenu
               layerIdx={layer}
