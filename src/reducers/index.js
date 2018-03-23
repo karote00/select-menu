@@ -211,7 +211,6 @@ const reducers = (state = initialState, action) => {
 
 					closeMenus.map(cm => menus[cm].map(m => m.items.map(itemIdx => {
 						menuItems[itemIdx].isFocus = false;
-						menuItems[itemIdx].selected = false;
 					})));
 				}
 				focusMenuIdx = layersOpen[layersOpen.length - 1];

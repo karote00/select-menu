@@ -194,6 +194,7 @@ class SelectMenuItem extends Component {
     	this.props.openMenu(subMenuIdx, !subMenuIsOpen);
     } else if (!editable || (editable && !edited)) {
     	this.props.itemSelected(itemKey);
+  		this.props.openMenu(0, false);
     }
   }
 
