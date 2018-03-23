@@ -79,6 +79,10 @@ const mapDispatchToProps = {
 	openMenu,
 };
 
+const SelectMenuItemContainer = styled.div`
+	position: relative;
+`;
+
 const SelectMenuItemWrapper = styled.div`
 	position: relative;
 	cursor: pointer;
@@ -281,7 +285,7 @@ class SelectMenuItem extends Component {
   	}
 
     return (
-    	<div>
+    	<SelectMenuItemContainer>
 	      <SelectMenuItemWrapper
 	    		onMouseEnter={this.handleSelectMenuItemMouseHover}
 	    		onMouseLeave={this.handleSelectMenuItemMouseLeave}
@@ -291,7 +295,7 @@ class SelectMenuItem extends Component {
 	    		{this.editContent()}
 	      </SelectMenuItemWrapper>
     		{subMenuContent}
-     	</div>
+     	</SelectMenuItemContainer>
     );
   }
 }

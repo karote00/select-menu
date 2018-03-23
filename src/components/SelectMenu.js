@@ -36,9 +36,13 @@ const mapDispatchToProps = {
 };
 
 const SelectMenuContainer = styled.div`
+  position: absolute;
+  width: 100%;
   display: ${props => props.isOpen ? 'block' : 'none'};
   background: #e5e5e5;
   border: 1px solid #a0a0a0;
+
+  // move menu
 `;
 
 const OptGroupLine = styled.div`

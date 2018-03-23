@@ -164,7 +164,14 @@ class SelectMenuWrapper extends Component {
     return (
       <Wrapper>
         <OutsideClickHandler onOutsideClick={this.onOutsideClick}>
-          <div tabIndex="-1" style={{ outline: 'none' }} ref={(mainMenu) => { this.mainMenu = mainMenu; }}>
+          <div
+            tabIndex="-1"
+            style={{
+              position: 'relative',
+              outline: 'none',
+            }}
+            ref={(mainMenu) => { this.mainMenu = mainMenu; }}
+          >
             <SelectMenuButton
               label={menuData.buttonLabel}
               isOpen={isOpen}
