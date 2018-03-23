@@ -132,6 +132,17 @@ class SelectMenuItemContent extends Component {
 		this.handleInputKeyUp = this.handleInputKeyUp.bind(this);
 	}
 
+	componentWillReceiveProps(nextProps) {
+		const { editable, edited, label } = nextProps;
+		const { editInput } = this.state;
+
+		if (editable && !edited && editInput) {
+			this.setState({
+				editInput: label,
+			});
+		}
+	}
+
 	iconContent() {
 		const { icon, hasIcon, selectable } = this.props;
 		const needEmptyIcon = selectable ? false : hasIcon;
@@ -214,8 +225,10 @@ class SelectMenuItemContent extends Component {
 
 		switch (keyCode) {
 			case 8: // press backspace
-				const v = e.target.value;
-				e.target.value = v.substr(0, v.length - 1);
+				const { editInput } = this.state;
+				this.setState({
+					editInput: editInput.substr(0, editInput.length - 1),
+				});
 				break;
 			case 13: // press enter
 				this.props.itemEdit(itemKey, false, editInput);

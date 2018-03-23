@@ -102,7 +102,6 @@ class SelectMenuWrapper extends Component {
 
   handleKeyUp(e) {
     e.preventDefault();
-    e.stopPropagation();
 
     this.combinationKeyChange(e);
 
@@ -121,7 +120,7 @@ class SelectMenuWrapper extends Component {
           if (!focusItem.disabled) {
             if (focusItem.subMenuIdx > 0) {
               this.props.openMenu(focusItem.subMenuIdx, !subMenuIsOpen);
-            } else if (focusItem.selectable) {
+            } else if (focusItem.selectable && !focusItem.edited) {
               this.props.itemSelected(focusItemIdx);
             }
           }

@@ -1,14 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 
 import SelectMenuItem from './SelectMenuItem';
+
+import { itemEdit } from '../actions';
 
 const propTypes = {
   // Props
   layer: PropTypes.number.isRequired,
   isOpen: PropTypes.bool.isRequired,
   layerIdx: PropTypes.number,
+
+  // Actions
+  itemEdit: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -16,6 +22,17 @@ const defaultProps = {
   layer: 0,
   isOpen: false,
   layerIdx: 0,
+
+  // Actions
+  itemEdit() {},
+};
+
+const mapStateToProps = (state) => ({
+  menuData: state,
+});
+
+const mapDispatchToProps = {
+  itemEdit,
 };
 
 const SelectMenuContainer = styled.div`
@@ -29,8 +46,20 @@ const OptGroupLine = styled.div`
 `;
 
 class SelectMenu extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleAddGroupItem = this.handleAddGroupItem.bind(this);
+  }
+
+  handleAddGroupItem(groupIdx, itemKey) {
+    const { layer, menuData } = this.props;
+    this.props.itemEdit(itemKey, true);
+  }
+
   render() {
-    const { menu, layer, isOpen, layerIdx } = this.props;
+    const { menu, layer, isOpen, layerIdx, menuData } = this.props;
+    const { menuItems } = menuData;
 
     const hasIcon = menu.filter(group =>
       group.items.filter(item =>
@@ -49,12 +78,19 @@ class SelectMenu extends Component {
           hasIcon={hasIcon}
         />)
       );
-      const addItem = meta.addable ?
+
+      const addNewMenuItem = meta.addable ? menuItems[meta.itemKey] : null;
+      const addItem = addNewMenuItem ?
         <SelectMenuItem
-          key="999"
-          icon="fa-plus"
+          {...addNewMenuItem}
+          key={addNewMenuItem.itemKey}
+          layerIdx={layerIdx}
+          layer={layer}
+          hasIcon={hasIcon}
+          onClick={() => this.handleAddGroupItem(i, addNewMenuItem.itemKey)}
         />
         : null;
+
       const optGroupLine = i === 0 ? null : <OptGroupLine key="1000" />;
 
       return [
@@ -75,4 +111,4 @@ class SelectMenu extends Component {
 SelectMenu.propTypes = propTypes;
 SelectMenu.defaultProps = defaultProps;
 
-export default SelectMenu;
+export default connect(mapStateToProps, mapDispatchToProps)(SelectMenu);

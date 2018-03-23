@@ -7,9 +7,16 @@ export const CHAR_KEYCODE =
     78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90,
   ];
 
+export const ONES = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+export const TENS = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+export const TEENS = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+
 const constants = {
   NUMBER_KEYCODE,
   CHAR_KEYCODE,
+  ONES,
+  TENS,
+  TEENS,
 };
 
 export default constants;

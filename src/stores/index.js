@@ -5,7 +5,8 @@ import thunk from 'redux-thunk';
 const menus = {
 	0: [{
 		meta: {
-			addable: false,
+			addable: true,
+			itemKey: 9,
 		},
 		items: [1, 2, 6],
 	}, {
@@ -20,6 +21,17 @@ const menus = {
 		},
 		items: [8, 7],
 	}],
+};
+
+const addMenuItem = {
+	label: 'Add Menu Item +',
+	disabled: false,
+	selectable: false,
+	selected: false,
+	editable: true,
+	edited: false,
+	isFocus: false,
+	isAddNewItem: true,
 };
 
 const menuItems = {
@@ -93,6 +105,10 @@ const menuItems = {
   	edited: false,
 		isFocus: false,
   },
+  9: {
+  	itemKey: 9,
+  	...addMenuItem,
+  },
 };
 
 const initialState = {
@@ -101,9 +117,11 @@ const initialState = {
 	main: menus[0],
   menus,
   menuItems,
+  addMenuItem,
   layersOpen: [],
   layersOpenFocusItem: [],
   selectedItems: [],
+  editItem: null,
   ctrlKey: false,
   metaKey: false,
 };

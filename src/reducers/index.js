@@ -7,6 +7,7 @@ import {
 	MOVE_FOCUS,
 	COMBINATION_KEY,
 } from '../actions';
+import numberConvert from '../utils/numberConvert';
 
 const menus = (state, action) => {
 	switch (action.type) {
@@ -182,11 +183,15 @@ const reducers = (state = initialState, action) => {
 				menus: menuList,
 			};
 		}
-		case ITEM_EDIT:
+		case ITEM_EDIT: {
+			const { itemKey, edited } = action.payload;
+
 			return {
 				...state,
 				menuItems: menuItems(state.menuItems, action),
+				editItem: edited ? itemKey : null,
 			};
+		}
 		case ITEM_FOCUS: {
 			const { itemKey, menuIdx } = action.payload;
 

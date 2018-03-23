@@ -32,6 +32,9 @@ const propTypes = {
 	layer: PropTypes.number,
 	layerIdx: PropTypes.number,
 
+	// Events
+	onClick: PropTypes.func,
+
 	// Actions
 	itemSelected: PropTypes.func.isRequired,
 	itemDelete: PropTypes.func.isRequired,
@@ -202,12 +205,12 @@ class SelectMenuItem extends Component {
   }
 
   editContent() {
-  	const { editable, edited } = this.props;
+  	const { editable, isAddNewItem, label } = this.props;
   	const { deleteClicked, selectMenuItemHover } = this.state;
 
 		return editable &&
 			<EditableContent
-    		className={`edit_content ${(editable && edited) ? '' : 'has_edit'} ${deleteClicked ? 'delete_clicked' : ''}`}
+    		className={`edit_content ${(editable && isAddNewItem) ? '' : 'has_edit'} ${deleteClicked ? 'delete_clicked' : ''}`}
     	>
 				<span key="1" className="icon edit" onClick={this.handleEditItem}>{FAIcon('fa-edit')}</span>
 				<span key="2" className="icon delete" onClick={this.handleDeleteClick}>{FAIcon('fa-trash')}</span>
@@ -255,7 +258,7 @@ class SelectMenuItem extends Component {
 	}
 
   render() {
-  	const { disabled, isFocus, itemKey, layer, subMenuIdx, menuData, layerIdx } = this.props;
+  	const { disabled, isFocus, itemKey, layer, subMenuIdx, menuData, layerIdx, onClick } = this.props;
   	const { selectMenuItemHover } = this.state;
   	let subMenuContent = null;
   	let subLayer = subMenuIdx;
@@ -284,7 +287,7 @@ class SelectMenuItem extends Component {
 	    		onMouseLeave={this.handleSelectMenuItemMouseLeave}
 	    		className={`${disabled ? 'disabled' : ''} ${selectMenuItemHover ? 'is_hover' : ''} ${isFocus ? 'is_focus' : ''}`}
 	      >
-	      	<SelectMenuItemContent onClick={this.onItemChange} {...this.props} />
+	      	<SelectMenuItemContent onClick={onClick || this.onItemChange} {...this.props} />
 	    		{this.editContent()}
 	      </SelectMenuItemWrapper>
     		{subMenuContent}
