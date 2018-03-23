@@ -182,15 +182,11 @@ const reducers = (state = initialState, action) => {
 				menus: menuList,
 			};
 		}
-		case ITEM_EDIT: {
-			const { itemKey, edited } = action.payload;
-
+		case ITEM_EDIT:
 			return {
 				...state,
 				menuItems: menuItems(state.menuItems, action),
-				editItem: edited ? itemKey : null,
 			};
-		}
 		case ITEM_FOCUS: {
 			const { itemKey, menuIdx } = action.payload;
 

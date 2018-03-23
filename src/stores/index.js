@@ -121,7 +121,6 @@ const initialState = {
   layersOpen: [],
   layersOpenFocusItem: [],
   selectedItems: [],
-  editItem: null,
   ctrlKey: false,
   metaKey: false,
 };

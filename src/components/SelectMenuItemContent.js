@@ -130,6 +130,7 @@ class SelectMenuItemContent extends Component {
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleInputKeyDown = this.handleInputKeyDown.bind(this);
 		this.handleInputKeyUp = this.handleInputKeyUp.bind(this);
+		this.handleInputBlur = this.handleInputBlur.bind(this);
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -165,6 +166,7 @@ class SelectMenuItemContent extends Component {
 					onChange={this.handleInputChange}
 					onKeyDown={this.handleInputKeyDown}
 					onKeyUp={this.handleInputKeyUp}
+					onBlur={this.handleInputBlur}
 				/>
 			}
 		</div>;
@@ -221,7 +223,6 @@ class SelectMenuItemContent extends Component {
 
 		const { itemKey } = this.props;
 		const { keyCode } = e;
-		const { editInput } = this.state;
 
 		switch (keyCode) {
 			case 8: // press backspace
@@ -231,7 +232,7 @@ class SelectMenuItemContent extends Component {
 				});
 				break;
 			case 13: // press enter
-				this.props.itemEdit(itemKey, false, editInput);
+				this.props.itemEdit(itemKey, false, this.state.editInput);
 				break;
 			case 27: // press escape
 				this.props.itemEdit(itemKey, false);
@@ -239,6 +240,11 @@ class SelectMenuItemContent extends Component {
 			default:
 				break;
 		}
+	}
+
+	handleInputBlur(e) {
+		const { itemKey } = this.props;
+		this.props.itemEdit(itemKey, false);
 	}
 
   render() {
