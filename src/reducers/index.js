@@ -5,6 +5,7 @@ import {
 	ITEM_FOCUS,
 	OPEN_MENU,
 	MOVE_FOCUS,
+	COMBINATION_KEY,
 } from '../actions';
 
 const menus = (state, action) => {
@@ -228,6 +229,11 @@ const reducers = (state = initialState, action) => {
 			return {
 				...state,
 				menus: menuItemMoveFocus(state, action),
+			};
+		case COMBINATION_KEY:
+			return {
+				...state,
+				[action.payload.key]: action.payload.isKeyPress,
 			};
 		default:
 			return state;

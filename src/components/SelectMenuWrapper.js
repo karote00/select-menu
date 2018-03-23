@@ -7,7 +7,7 @@ import OutsideClickHandler from './OutsideClickHandler';
 import SelectMenuButton from './SelectMenuButton';
 import SelectMenu from './SelectMenu';
 
-import { itemSelected, openMenu, moveFocus } from '../actions';
+import { itemSelected, openMenu, moveFocus, combinationKey } from '../actions';
 
 import '../css/SelectMenu.css';
 
@@ -19,6 +19,7 @@ const propTypes = {
   itemSelected: PropTypes.func.isRequired,
   openMenu: PropTypes.func.isRequired,
   moveFocus: PropTypes.func.isRequired,
+  combinationKey: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -29,6 +30,7 @@ const defaultProps = {
   itemSelected() {},
   openMenu() {},
   moveFocus() {},
+  combinationKey() {},
 };
 
 const mapStateToProps = (state) => ({
@@ -39,6 +41,7 @@ const mapDispatchToProps = {
   itemSelected,
   openMenu,
   moveFocus,
+  combinationKey,
 };
 
 const Wrapper = styled.div`
@@ -59,10 +62,13 @@ class SelectMenuWrapper extends Component {
     super(props);
 
     this.onOutsideClick = this.onOutsideClick.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
+    this.combinationKeyChange = this.combinationKeyChange.bind(this);
   }
 
   componentDidMount() {
+    this.mainMenu.addEventListener('keydown', this.handleKeyDown);
     this.mainMenu.addEventListener('keyup', this.handleKeyUp);
   }
 
@@ -76,9 +82,21 @@ class SelectMenuWrapper extends Component {
     this.props.openMenu(layersOpen[0], false);
   }
 
+  combinationKeyChange(e) {
+    const { ctrlKey, metaKey } = e;
+    this.props.combinationKey('ctrlKey', ctrlKey);
+    this.props.combinationKey('metaKey', metaKey);
+  }
+
+  handleKeyDown(e) {
+    this.combinationKeyChange(e);
+  }
+
   handleKeyUp(e) {
     e.preventDefault();
     e.stopPropagation();
+
+    this.combinationKeyChange(e);
 
     const { layer, menuData } = this.props;
     const { layersOpen, menus, menuItems, focusMenuIdx, layersOpenFocusItem } = menuData;

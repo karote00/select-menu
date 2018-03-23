@@ -185,16 +185,19 @@ class SelectMenuItem extends Component {
 		this.handleEditItem = this.handleEditItem.bind(this);
 	}
 
-	onItemChange(e) {
+	onItemChange(e, s) {
     const { itemKey, editable, edited, disabled, subMenuIdx, menuData } = this.props;
+    const { ctrlKey, metaKey, layersOpen } = menuData;
+
     if (disabled) return false;
+    const multiClickEnable = ctrlKey || metaKey;
 
     if (subMenuIdx > 0) {
-    	const subMenuIsOpen = menuData.layersOpen.indexOf(subMenuIdx) > -1;
+    	const subMenuIsOpen = layersOpen.indexOf(subMenuIdx) > -1;
     	this.props.openMenu(subMenuIdx, !subMenuIsOpen);
     } else if (!editable || (editable && !edited)) {
     	this.props.itemSelected(itemKey);
-  		this.props.openMenu(0, false);
+  		if (!multiClickEnable) this.props.openMenu(0, false);
     }
   }
 

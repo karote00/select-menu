@@ -5,6 +5,7 @@ export const ITEM_FOCUS = 'ITEM_FOCUS';
 export const ITEM_UNFOCUS = 'ITEM_UNFOCUS';
 export const OPEN_MENU = 'OPEN_MENU';
 export const MOVE_FOCUS = 'MOVE_FOCUS';
+export const COMBINATION_KEY = 'COMBINATION_KEY';
 
 export const itemSelected = (itemKey) => ({
 	type: ITEM_SELECTED,
@@ -50,5 +51,13 @@ export const moveFocus = direction => ({
 	type: MOVE_FOCUS,
 	payload: {
 		direction,
+	},
+});
+
+export const combinationKey = (key, isKeyPress) => ({
+	type: COMBINATION_KEY,
+	payload: {
+		key,
+		isKeyPress,
 	},
 });
