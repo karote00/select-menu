@@ -5,16 +5,19 @@ import { connect } from 'react-redux';
 
 import SelectMenuItem from './SelectMenuItem';
 
-import { itemEdit } from '../actions';
+import { itemEdit, addItem } from '../actions';
+import Input from '../utils/Input';
 
 const propTypes = {
   // Props
   layer: PropTypes.number.isRequired,
   isOpen: PropTypes.bool.isRequired,
   layerIdx: PropTypes.number,
+  addNewMenuItemData: PropTypes.object,
 
   // Actions
   itemEdit: PropTypes.func.isRequired,
+  addItem: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -22,9 +25,23 @@ const defaultProps = {
   layer: 0,
   isOpen: false,
   layerIdx: 0,
+  addNewMenuItemData: {
+    label: 'Add Menu Item +',
+    hasAddNewItemCheckedLabel: 'Add Menu Item +',
+    disabled: false,
+    selectable: false,
+    selected: false,
+    editable: true,
+    edited: false,
+    isFocus: false,
+    isAddNewItem: true,
+    disabledSelectItemControl: false,
+  },
+  initialLabel: 'Add Menu Item +',
 
   // Actions
   itemEdit() {},
+  addItem() {},
 };
 
 const mapStateToProps = (state) => ({
@@ -33,6 +50,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   itemEdit,
+  addItem,
 };
 
 const SelectMenuContainer = styled.div`
@@ -53,17 +71,72 @@ class SelectMenu extends Component {
   constructor(props) {
     super(props);
 
-    this.handleAddGroupItem = this.handleAddGroupItem.bind(this);
+    this.state = {
+      isAddMenuItemEdited: false,
+      editAddItem: props.addNewMenuItemData.label,
+    };
+
+    this.handleAddGroupItemFocus = this.handleAddGroupItemFocus.bind(this);
+    this.handleAddGroupItemBlur = this.handleAddGroupItemBlur.bind(this);
+    this.handleAddGroupItemKeyUp = this.handleAddGroupItemKeyUp.bind(this);
+    this.handleAddGroupItemChange = this.handleAddGroupItemChange.bind(this);
   }
 
-  handleAddGroupItem(groupIdx, itemKey) {
-    const { layer, menuData } = this.props;
-    this.props.itemEdit(itemKey, true);
+  handleAddGroupItemFocus() {
+    const { isAddMenuItemEdited } = this.state;
+    this.setState({ isAddMenuItemEdited: true, editAddItem: this.props.initialLabel });
+  }
+
+  handleAddGroupItemBlur(e) {
+    Input.handleInputBlur(e, () => { this.setState({ isAddMenuItemEdited: false }); });
+  }
+
+  handleAddGroupItemChange(value) {
+    const { editAddItem } = this.state;
+    this.setState({ editAddItem: value });
+  }
+
+  handleAddGroupItemKeyUp(e, groupIdx) {
+    Input.handleInputKeyUp(e, {
+      setValueFunc: () => {
+        const { editAddItem } = this.state;
+        this.setState({
+          editAddItem: editAddItem.substr(0, editAddItem.length - 1),
+        });
+      },
+      endEditFunc: () => {
+        const { addNewMenuItemData, layer } = this.props;
+        const { editAddItem } = this.state;
+
+        this.handleAddGroupItemBlur(e);
+        this.props.addItem({
+            ...addNewMenuItemData,
+            label: editAddItem,
+            isAddNewItem: false,
+          },
+          this.props.layer,
+          groupIdx,
+        );
+      },
+      cancelEditFunc: () => {
+        this.handleAddGroupItemBlur(e);
+      },
+    });
   }
 
   render() {
-    const { menu, layer, isOpen, layerIdx, menuData } = this.props;
+    const { menu, layer, isOpen, layerIdx, menuData, addNewMenuItemData } = this.props;
+    const { isAddMenuItemEdited, editAddItem } = this.state;
     const { menuItems } = menuData;
+    let firstSelectedItem = null;
+
+    menu.forEach(group => {
+      if (!firstSelectedItem) {
+        group.items.forEach(item => {
+          if (!firstSelectedItem && item.selected) firstSelectedItem = item;
+        });
+      }
+    })
 
     const hasIcon = menu.filter(group =>
       group.items.filter(item =>
@@ -83,15 +156,20 @@ class SelectMenu extends Component {
         />)
       );
 
-      const addNewMenuItem = meta.addable ? menuItems[meta.itemKey] : null;
-      const addItem = addNewMenuItem ?
+      const addItem = meta.addable ?
         <SelectMenuItem
-          {...addNewMenuItem}
-          key={addNewMenuItem.itemKey}
+          {...addNewMenuItemData}
+          key="999"
           layerIdx={layerIdx}
           layer={layer}
           hasIcon={hasIcon}
-          onClick={() => this.handleAddGroupItem(i, addNewMenuItem.itemKey)}
+          edited={isAddMenuItemEdited}
+          enabledSelectItemControl={false}
+          editInputValue={editAddItem}
+          onClick={this.handleAddGroupItemFocus}
+          onChange={(value) => this.handleAddGroupItemChange(value)}
+          onKeyUp={(e) => this.handleAddGroupItemKeyUp(e, i)}
+          onBlur={this.handleAddGroupItemBlur}
         />
         : null;
 
@@ -104,8 +182,11 @@ class SelectMenu extends Component {
       ];
     });
 
+    // Calculater first selected item position
+    // console.warn(firstSelectedItem)
+
     return (
-      <SelectMenuContainer isOpen={isOpen}>
+      <SelectMenuContainer style={{ transform: `translate()` }} isOpen={isOpen}>
         {OptGroupContents}
       </SelectMenuContainer>
     );

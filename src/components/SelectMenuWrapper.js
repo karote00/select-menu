@@ -82,7 +82,7 @@ class SelectMenuWrapper extends Component {
 
   onOutsideClick() {
     const { menuData, layer } = this.props;
-    const { main, menuItems, layersOpen, layersOpenFocusItem } = menuData;
+    const { layersOpen } = menuData;
     const isOpen = layersOpen.indexOf(layer) > -1;
 
     if (!isOpen) return;
@@ -117,11 +117,11 @@ class SelectMenuWrapper extends Component {
 
       switch (keyCode) {
         case 13: // Enter
-          if (!focusItem.disabled) {
+          if (focusItem && !focusItem.disabled) {
             if (focusItem.subMenuIdx > 0) {
               this.props.openMenu(focusItem.subMenuIdx, !subMenuIsOpen);
             } else if (focusItem.selectable && !focusItem.edited) {
-              this.props.itemSelected(focusItemIdx);
+              this.props.itemSelected(focusItemIdx, layer);
             }
           }
           break;
@@ -153,9 +153,9 @@ class SelectMenuWrapper extends Component {
 
   render() {
     const { menuData, layer, buttonAlignType, btnSimple, btnStyle, btnDropdown } = this.props;
-    const { main, menuItems, layersOpen, layersOpenFocusItem } = menuData;
+    const { menus, mainMenuIdx, menuItems, layersOpen, layersOpenFocusItem } = menuData;
 
-    const menu = main.map(m => ({
+    const menu = menus[mainMenuIdx].map(m => ({
       ...m,
       items: m.items.map(it => menuItems[it])
     }));

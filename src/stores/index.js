@@ -23,17 +23,6 @@ const menus = {
 	}],
 };
 
-const addMenuItem = {
-	label: 'Add Menu Item +',
-	disabled: false,
-	selectable: false,
-	selected: false,
-	editable: true,
-	edited: false,
-	isFocus: false,
-	isAddNewItem: true,
-};
-
 const menuItems = {
 	1: {
 		itemKey: 1,
@@ -105,22 +94,21 @@ const menuItems = {
   	edited: false,
 		isFocus: false,
   },
-  9: {
-  	itemKey: 9,
-  	...addMenuItem,
-  },
 };
 
 const initialState = {
+	// User Data
 	buttonLabel: 'Label',
-	focusMenuIdx: null,
-	main: menus[0],
+	mainMenuIdx: 0,
   menus,
   menuItems,
-  addMenuItem,
+
+  // Initial Data
+	focusMenuIdx: null,
   layersOpen: [],
   layersOpenFocusItem: [],
-  selectedItems: [],
+  selectedLayerItems: {},
+  layersBoundingClientRect: [],
   ctrlKey: false,
   metaKey: false,
 };

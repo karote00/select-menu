@@ -75,7 +75,8 @@ class SelectMenuButton extends Component {
 
   render() {
     const { label, menuData, buttonAlignType, btnSimple, btnStyle, btnDropdown } = this.props;
-    const { selectedItems } = menuData;
+    const { selectedLayerItems, mainMenuIdx } = menuData;
+    const mainMenuSelectedItemsCount = selectedLayerItems[mainMenuIdx] ? selectedLayerItems[mainMenuIdx].length : 0;
     const btnOptions = {};
     // TODO: Change label with seletedItems
 
@@ -96,7 +97,7 @@ class SelectMenuButton extends Component {
         style={btnStyle}
       >
         <SelectMenuItemContent
-          className={`select-button ${selectedItems.length === 0 ? 'grayed-out' : ''} ${buttonAlignType === 'between' ? 'between-align' : ''}`}
+          className={`select-button ${mainMenuSelectedItemsCount === 0 ? 'grayed-out' : ''} ${buttonAlignType === 'between' ? 'between-align' : ''}`}
           label={label}
           {...btnOptions}
         />

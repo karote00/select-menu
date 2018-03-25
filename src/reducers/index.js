@@ -3,12 +3,14 @@ import {
 	ITEM_DELETE,
 	ITEM_EDIT,
 	ITEM_FOCUS,
+	ITEM_UNFOCUS,
 	OPEN_MENU,
 	MOVE_FOCUS,
 	COMBINATION_KEY,
+	ADD_ITEM,
 } from '../actions';
 
-const menus = (state, action) => {
+const menus = (state, action, opt) => {
 	switch (action.type) {
 		case ITEM_DELETE: {
 			const { itemKey, menuIdx } = action.payload;
@@ -24,6 +26,18 @@ const menus = (state, action) => {
 
 			return state;
 		}
+		case ADD_ITEM: {
+			const { menuIdx, groupIdx } = action.payload;
+			const { itemKey } = opt;
+			const menu = state[menuIdx];
+
+			menu[groupIdx].items.push(itemKey);
+
+			return {
+				...state,
+				[menuIdx]: menu,
+			};
+		}
 		default:
 			return state;
 	}
@@ -34,8 +48,10 @@ const menuItemMoveFocus = (state, action) => {
 		case MOVE_FOCUS: {
 			const { direction } = action.payload;
 			const { menus, layersOpen, menuItems, focusMenuIdx, layersOpenFocusItem } = state;
-			const currentFocusMenuIdx = focusMenuIdx ? layersOpen.indexOf(focusMenuIdx) : layersOpen.length - 1;
+
+			const currentFocusMenuIdx = focusMenuIdx > -1 ? layersOpen.indexOf(focusMenuIdx) : layersOpen.length - 1;
 			const focusItemIdx = layersOpenFocusItem[currentFocusMenuIdx];
+			// const openMenu = menus[currentFocusMenuIdx];
 			const openMenu = menus[layersOpen[layersOpen.length - 1]];
 			const openMenuItemIdxs = openMenu.reduce((sum, m) => sum.concat(m.items), []);
 			const focusItem = menuItems[focusItemIdx];
@@ -149,22 +165,74 @@ const menuItems = (state, action) => {
 				[itemKey]: item,
 			};
 		}
+		case ADD_ITEM: {
+			const { item } = action.payload;
+			const nextCount = Object.keys(state).length + 1;
+
+			item.itemKey = nextCount;
+
+			return {
+				...state,
+				[nextCount]: item,
+			};
+		}
 		default:
 			return state;
 	}
 };
 
+const layersOpenFocus = (state, action) => {
+	switch (action.type) {
+		case ITEM_FOCUS: {
+			const { menuItems, layersOpen, layersOpenFocusItem } = state;
+			const { itemKey, menuIdx } = action.payload;
+
+			const currentFocusMenuIdx = layersOpen.indexOf(menuIdx);
+
+			if (!menuItems[itemKey].disabled) {
+				if (layersOpenFocusItem[currentFocusMenuIdx]) layersOpenFocusItem[currentFocusMenuIdx] = itemKey;
+				else layersOpenFocusItem.push(itemKey);
+			}
+
+			return layersOpenFocusItem;
+		}
+		case ITEM_UNFOCUS: {
+			const { menuItems, layersOpen, layersOpenFocusItem } = state;
+			const { itemKey, menuIdx } = action.payload;
+
+			const currentFocusMenuIdx = layersOpen.indexOf(menuIdx);
+			const currentFocusItem = menuItems[layersOpenFocusItem[currentFocusMenuIdx]];
+
+			if (currentFocusItem && !(currentFocusItem.subMenuIdx && layersOpen.indexOf(currentFocusItem.subMenuIdx) > -1)) {
+				currentFocusItem.isFocus = false;
+				layersOpenFocusItem[currentFocusMenuIdx] = -1;
+			}
+
+			return layersOpenFocusItem;
+		}
+		default:
+			return state;
+	}
+}
+
 const reducers = (state = initialState, action) => {
 	switch (action.type) {
 		case ITEM_SELECTED: {
-			const { itemKey } = action.payload;
-			const { selectedItems } = state;
+			const { itemKey, menuIdx } = action.payload;
+			const { selectedLayerItems } = state;
 
-			const selectedItemIdx = selectedItems.indexOf(itemKey);
-			if (selectedItemIdx > -1) {
-				selectedItems.splice(selectedItemIdx, 1);
+			const selectedItems = selectedLayerItems[menuIdx];
+
+			if (selectedItems) {
+				const selectedItemIdx = selectedItems.indexOf(itemKey);
+				if (selectedItemIdx > -1) {
+					selectedItems.splice(selectedItemIdx, 1);
+				} else {
+					selectedItems.push(itemKey);
+				}
 			} else {
-				selectedItems.push(itemKey);
+				selectedLayerItems[menuIdx] = [];
+				selectedLayerItems[menuIdx].push(itemKey);
 			}
 
 			return {
@@ -173,37 +241,30 @@ const reducers = (state = initialState, action) => {
 				menuItems: menuItems(state.menuItems, action),
 			};
 		}
-		case ITEM_DELETE: {
-			const menuList = menus(state.menus, action);
-
+		case ITEM_DELETE:
 			return {
 				...state,
-				main: menuList[0],
-				menus: menuList,
+				menus: menus(state.menus, action),
 			};
-		}
 		case ITEM_EDIT:
 			return {
 				...state,
 				menuItems: menuItems(state.menuItems, action),
 			};
 		case ITEM_FOCUS: {
-			const { itemKey, menuIdx } = action.payload;
-
-			const layersOpenFocusItem = state.layersOpenFocusItem;
-			const currentFocusMenuIdx = state.layersOpen.indexOf(menuIdx);
-			const currentFocusItem = state.menuItems[state.layersOpenFocusItem[currentFocusMenuIdx]];
-
-			if (currentFocusItem) currentFocusItem.isFocus = false;
-
-			if (layersOpenFocusItem[currentFocusMenuIdx]) layersOpenFocusItem[currentFocusMenuIdx] = itemKey;
-			else layersOpenFocusItem.push(itemKey);
+			const { menuIdx } = action.payload;
 
 			return {
 				...state,
 				menuItems: menuItems(state.menuItems, action),
 				focusMenuIdx: menuIdx,
-				layersOpenFocusItem,
+				layersOpenFocusItem: layersOpenFocus(state, action),
+			};
+		}
+		case ITEM_UNFOCUS: {
+			return {
+				...state,
+				layersOpenFocusItem: layersOpenFocus(state, action),
 			};
 		}
 		case OPEN_MENU: {
@@ -234,7 +295,6 @@ const reducers = (state = initialState, action) => {
 				layersOpen,
 				focusMenuIdx,
 				layersOpenFocusItem,
-				menus,
 			};
 		}
 		case MOVE_FOCUS:
@@ -247,6 +307,16 @@ const reducers = (state = initialState, action) => {
 				...state,
 				[action.payload.key]: action.payload.isKeyPress,
 			};
+		case ADD_ITEM: {
+			const newMenuItems = menuItems(state.menuItems, action);
+			const newMenus = menus(state.menus, action, { itemKey: Object.keys(newMenuItems).length });
+
+			return {
+				...state,
+				menus: newMenus,
+				menuItems: newMenuItems,
+			};
+		}
 		default:
 			return state;
 	}

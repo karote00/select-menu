@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import { itemEdit } from '../actions';
 import { isFA, FAIcon } from '../utils/Icon';
+import Input from '../utils/Input';
 
 const propTypes = {
 	// Props
@@ -39,9 +40,6 @@ const defaultProps = {
 	edited: false,
 	disabled: false,
 	alignType: 'between',
-
-	// Event
-	onClick() {},
 
 	// Actions
 	itemEdit() {},
@@ -152,21 +150,34 @@ class SelectMenuItemContent extends Component {
 	};
 
 	labelContent() {
-		const { label, tips, editable, edited } = this.props;
+		const {
+			label,
+			tips,
+			editable,
+			edited,
+			editInputValue,
+			onFocus,
+			onChange,
+			onKeyDown,
+			onKeyUp,
+			onBlur,
+		} = this.props;
 		const { editInput } = this.state;
+
+		const inputValue = typeof editInputValue !== 'undefined' ? editInputValue : editInput;
 
 		return <div className={`label ${(editable && edited) ? 'edited' : ''} ${tips ? 'hasTips' : ''}`}>
 			{!edited ?
 				label :
 				<input
 					type="text"
-					value={editInput}
+					value={editInputValue || editInput}
 					autoFocus
-					onFocus={this.handleInputFocus}
+					onFocus={onFocus || this.handleInputFocus}
 					onChange={this.handleInputChange}
-					onKeyDown={this.handleInputKeyDown}
-					onKeyUp={this.handleInputKeyUp}
-					onBlur={this.handleInputBlur}
+					onKeyDown={onKeyDown || this.handleInputKeyDown}
+					onKeyUp={onKeyUp || this.handleInputKeyUp}
+					onBlur={onBlur || this.handleInputBlur}
 				/>
 			}
 		</div>;
@@ -183,7 +194,11 @@ class SelectMenuItemContent extends Component {
 
 	tipsContent() {
 		const { tips } = this.props;
-		return tips && <div className="fl-r tips">{tipsItem(tips)}</div>;
+		if (typeof tips === 'object') {
+			return tips.length > 0 && <div className="fl-r tips">{tipsItem(tips)}</div>;
+		} else {
+			return tips && <div className="fl-r tips">{tips}</div>;
+		}
 	};
 
 	checkContent() {
@@ -196,55 +211,43 @@ class SelectMenuItemContent extends Component {
 	};
 
 	handleInputFocus(e) {
-		const { label } = this.props;
-		const { editInput } = this.state;
-
-		e.target.value = '';
-		e.target.value = label;
-		e.target.select();
+		Input.handleInputFocus(e);
 	}
 
 	handleInputChange(e) {
-		const { value } = e.target;
-		this.setState({ editInput: value });
+		const { onChange } = this.props;
+
+		onChange(e.target.value);
+
+		Input.handleInputChange(e, (value) => { this.setState({ editInput: value }); });
 	}
 
 	handleInputKeyDown(e) {
-		const { keyCode } = e;
-
-		if (keyCode === 8) { // press backspace
-			e.preventDefault();
-		}
+		Input.handleInputKeyDown(e);
 	}
 
 	handleInputKeyUp(e) {
-		e.preventDefault();
-		e.stopPropagation();
-
 		const { itemKey } = this.props;
-		const { keyCode } = e;
 
-		switch (keyCode) {
-			case 8: // press backspace
+		Input.handleInputKeyUp(e, {
+			setValueFunc: () => {
 				const { editInput } = this.state;
 				this.setState({
 					editInput: editInput.substr(0, editInput.length - 1),
 				});
-				break;
-			case 13: // press enter
+			},
+			endEditFunc: () => {
 				this.props.itemEdit(itemKey, false, this.state.editInput);
-				break;
-			case 27: // press escape
+			},
+			cancelEditFunc: () => {
 				this.props.itemEdit(itemKey, false);
-				break;
-			default:
-				break;
-		}
+			},
+		});
 	}
 
 	handleInputBlur(e) {
 		const { itemKey } = this.props;
-		this.props.itemEdit(itemKey, false);
+		Input.handleInputBlur(e, () => { this.props.itemEdit(itemKey, false); })
 	}
 
   render() {

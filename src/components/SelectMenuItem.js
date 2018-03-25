@@ -12,6 +12,7 @@ import {
 	itemDelete,
 	itemEdit,
 	itemFocus,
+	itemUnfocus,
 	openMenu,
 } from '../actions';
 import { isFA, FAIcon } from '../utils/Icon';
@@ -31,15 +32,22 @@ const propTypes = {
 	subMenuIdx: PropTypes.number,
 	layer: PropTypes.number,
 	layerIdx: PropTypes.number,
+	enabledSelectItemControl: PropTypes.bool,
 
 	// Events
 	onClick: PropTypes.func,
+	onFocus: PropTypes.func,
+	onChange: PropTypes.func,
+	onKeyDown: PropTypes.func,
+	onKeyUp: PropTypes.func,
+	onBlur: PropTypes.func,
 
 	// Actions
 	itemSelected: PropTypes.func.isRequired,
 	itemDelete: PropTypes.func.isRequired,
 	itemEdit: PropTypes.func.isRequired,
 	itemFocus: PropTypes.func.isRequired,
+	itemUnfocus: PropTypes.func.isRequired,
 	openMenu: PropTypes.func.isRequired,
 };
 
@@ -58,12 +66,14 @@ const defaultProps = {
 	subMenuIdx: 0,
 	layer: 0,
 	layerIdx: 0,
+	enabledSelectItemControl: true,
 
 	// Actions
 	itemSelected() {},
 	itemDelete() {},
 	itemEdit() {},
 	itemFocus() {},
+	itemUnfocus() {},
 	openMenu() {},
 };
 
@@ -76,6 +86,7 @@ const mapDispatchToProps = {
 	itemDelete,
 	itemEdit,
 	itemFocus,
+	itemUnfocus,
 	openMenu,
 };
 
@@ -193,7 +204,7 @@ class SelectMenuItem extends Component {
 	}
 
 	onItemChange(e, s) {
-    const { itemKey, editable, edited, disabled, subMenuIdx, menuData } = this.props;
+    const { itemKey, editable, edited, disabled, subMenuIdx, menuData, layer } = this.props;
     const { ctrlKey, metaKey, layersOpen } = menuData;
 
     if (disabled) return false;
@@ -203,14 +214,14 @@ class SelectMenuItem extends Component {
     	const subMenuIsOpen = layersOpen.indexOf(subMenuIdx) > -1;
     	this.props.openMenu(subMenuIdx, !subMenuIsOpen);
     } else if (!editable || (editable && !edited)) {
-    	this.props.itemSelected(itemKey);
+    	this.props.itemSelected(itemKey, layer);
   		if (!multiClickEnable) this.props.openMenu(0, false);
     }
   }
 
   editContent() {
   	const { editable, isAddNewItem, label } = this.props;
-  	const { deleteClicked, selectMenuItemHover } = this.state;
+  	const { deleteClicked } = this.state;
 
 		return editable &&
 			<EditableContent
@@ -251,18 +262,35 @@ class SelectMenuItem extends Component {
 	}
 
 	handleSelectMenuItemMouseHover() {
-		const { itemKey, layer, disabled } = this.props;
+		const { itemKey, layer, enabledSelectItemControl } = this.props;
 		this.setState({ selectMenuItemHover: true });
-		this.props.itemFocus(itemKey, layer);
+		if (enabledSelectItemControl) this.props.itemFocus(itemKey, layer);
 	}
 
 	handleSelectMenuItemMouseLeave() {
-		const { itemKey, layer, disabled } = this.props;
+		const { itemKey, layer, enabledSelectItemControl } = this.props;
 		this.cancelSelectMenuItemHover();
+		if (enabledSelectItemControl) this.props.itemUnfocus(itemKey, layer);
 	}
 
   render() {
-  	const { disabled, isFocus, itemKey, layer, subMenuIdx, menuData, layerIdx, onClick } = this.props;
+  	const {
+  		disabled,
+  		isFocus,
+  		itemKey,
+  		layer,
+  		subMenuIdx,
+  		menuData,
+  		layerIdx,
+  		getItemValue,
+  		editInputValue,
+  		onClick,
+			onFocus,
+			onChange,
+			onKeyDown,
+			onKeyUp,
+			onBlur,
+  	} = this.props;
   	const { selectMenuItemHover } = this.state;
   	let subMenuContent = null;
   	let subLayer = subMenuIdx;
@@ -291,7 +319,16 @@ class SelectMenuItem extends Component {
 	    		onMouseLeave={this.handleSelectMenuItemMouseLeave}
 	    		className={`${disabled ? 'disabled' : ''} ${selectMenuItemHover ? 'is_hover' : ''} ${isFocus ? 'is_focus' : ''}`}
 	      >
-	      	<SelectMenuItemContent onClick={onClick || this.onItemChange} {...this.props} />
+	      	<SelectMenuItemContent
+	      		{...this.props}
+	      		editInputValue={editInputValue}
+	      		onClick={onClick || this.onItemChange}
+						onFocus={onFocus}
+						onChange={onChange}
+						onKeyDown={onKeyDown}
+						onKeyUp={onKeyUp}
+						onBlur={onBlur}
+	      	/>
 	    		{this.editContent()}
 	      </SelectMenuItemWrapper>
     		{subMenuContent}
